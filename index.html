@@ -166,14 +166,6 @@ body { font-family:'Heebo',sans-serif; background:var(--bg); color:var(--text); 
   background:var(--surface); position:sticky; top:56px; z-index:100;
 }
 .filter-inner { max-width:1440px; margin:0 auto; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
-.search-wrap { position:relative; flex:1; min-width:160px; max-width:240px; }
-.s-icon { position:absolute; top:50%; transform:translateY(-50%); right:8px; color:var(--text3); font-size:12px; pointer-events:none; }
-.search-input {
-  width:100%; height:32px; background:var(--bg); border:1px solid var(--border);
-  border-radius:7px; padding:0 28px 0 10px; color:var(--text); font-size:12px;
-  font-family:'Heebo',sans-serif;
-}
-.search-input:focus { outline:none; border-color:var(--blue2); }
 .f-select {
   height:32px; background:var(--bg); border:1px solid var(--border); border-radius:7px;
   padding:0 9px; color:var(--text); font-size:12px; font-family:'Heebo',sans-serif; cursor:pointer;
@@ -264,13 +256,13 @@ td.auth-name { font-weight:700; color:var(--blue); font-size:12.5px; white-space
   <div class="kpi-inner">
     <div class="kpi-card blue">
       <div class="kpi-lbl">מוסדות</div>
-      <div class="kpi-val">450</div>
-      <div class="kpi-sub">30 רשויות פעילות</div>
+      <div class="kpi-val" id="kpi-mos-val">450</div>
+      <div class="kpi-sub" id="kpi-mos-sub">30 רשויות פעילות</div>
     </div>
     <div class="kpi-card blue">
       <div class="kpi-lbl">תלמידים</div>
-      <div class="kpi-val">184,829</div>
-      <div class="kpi-sub">סה"כ במחוז</div>
+      <div class="kpi-val" id="kpi-stu-val">184,829</div>
+      <div class="kpi-sub" id="kpi-stu-sub">סה"כ במחוז</div>
     </div>
     <div class="kpi-card green">
       <div class="kpi-lbl">נוכחות מלאה</div>
@@ -303,10 +295,39 @@ td.auth-name { font-weight:700; color:var(--blue); font-size:12.5px; white-space
 <!-- ═══ FILTER BAR ═══ -->
 <div class="filter-bar">
   <div class="filter-inner">
-    <div class="search-wrap">
-      <span class="s-icon">🔍</span>
-      <input class="search-input" type="text" placeholder="חיפוש רשות..." id="searchInput" oninput="applyFilters()">
-    </div>
+    <select class="f-select" style="min-width:160px;max-width:240px;" id="rashutFilter" onchange="applyFilters()">
+      <option value="">כל הרשויות</option>
+      <option>אום אל-פחם</option>
+      <option>אור עקיבא</option>
+      <option>אלונה</option>
+      <option>באקה אל-גרביה</option>
+      <option>בנימינה גבעת עדה</option>
+      <option>בסמ"ה</option>
+      <option>ג'סר א-זרקא</option>
+      <option>ג'ת</option>
+      <option>דאלית אל-כרמל</option>
+      <option>זבולון</option>
+      <option>זכרון יעקב</option>
+      <option>חדרה</option>
+      <option>חוף הכרמל</option>
+      <option>חיפה</option>
+      <option>חריש</option>
+      <option>טירת כרמל</option>
+      <option>כפר קרע</option>
+      <option>מנשה</option>
+      <option>מעלה עירון</option>
+      <option>נשר</option>
+      <option>עספיא</option>
+      <option>ערערה</option>
+      <option>פוריידיס</option>
+      <option>פרדס חנה-כרכור</option>
+      <option>קרית אתא</option>
+      <option>קרית ביאליק</option>
+      <option>קרית טבעון</option>
+      <option>קרית ים</option>
+      <option>קרית מוצקין</option>
+      <option>רכסים</option>
+    </select>
     <select class="f-select" id="mefakechFilter" onchange="applyFilters()">
       <option value="">כל המפקחים</option>
     </select>
@@ -446,36 +467,36 @@ td.auth-name { font-weight:700; color:var(--blue); font-size:12.5px; white-space
 <script>
 // ── DATA ──────────────────────────────────────────────────────
 const RESHUT_DATA = [
-  {name:"אום אל-פחם",sector:"ערבי",mefakech:"ערבי א׳",students:13946,w1Pct:50,w2Pct:37,w1AbsPct:24,w2AbsPct:18,trend:-13,abs3d:12250,abs3dPct:87.8,days:[46,40,43,42,12]},
-  {name:"אור עקיבא",sector:"יהודי",mefakech:"צפון",students:4511,w1Pct:55,w2Pct:54,w1AbsPct:22,w2AbsPct:25,trend:-1,abs3d:591,abs3dPct:13.1,days:[56,53,59,51,50]},
-  {name:"אלונה",sector:"יהודי",mefakech:"צפון",students:295,w1Pct:58,w2Pct:68,w1AbsPct:0,w2AbsPct:1,trend:10,abs3d:53,abs3dPct:18,days:[81,65,53,73,65]},
-  {name:"באקה אל-גרביה",sector:"ערבי",mefakech:"ערבי א׳",students:6946,w1Pct:49,w2Pct:44,w1AbsPct:35,w2AbsPct:30,trend:-5,abs3d:4946,abs3dPct:71.2,days:[51,45,48,45,29]},
-  {name:"בנימינה גבעת עדה",sector:"יהודי",mefakech:"צפון",students:3373,w1Pct:57,w2Pct:60,w1AbsPct:14,w2AbsPct:17,trend:3,abs3d:487,abs3dPct:14.4,days:[63,61,58,62,55]},
-  {name:'בסמ"ה',sector:"ערבי",mefakech:"ערבי א׳",students:2746,w1Pct:42,w2Pct:39,w1AbsPct:41,w2AbsPct:29,trend:-3,abs3d:2243,abs3dPct:81.7,days:[46,41,42,47,18]},
-  {name:"ג'סר א-זרקא",sector:"ערבי",mefakech:"ערבי ב׳",students:3476,w1Pct:35,w2Pct:41,w1AbsPct:33,w2AbsPct:27,trend:6,abs3d:989,abs3dPct:28.5,days:[34,34,30,36,70]},
-  {name:"ג'ת",sector:"ערבי",mefakech:"ערבי א׳",students:2539,w1Pct:42,w2Pct:33,w1AbsPct:30,w2AbsPct:26,trend:-9,abs3d:2484,abs3dPct:97.8,days:[40,36,43,45,2]},
-  {name:"דאלית אל-כרמל",sector:"דרוזי",mefakech:"דרוזי",students:2571,w1Pct:72,w2Pct:57,w1AbsPct:17,w2AbsPct:28,trend:-15,abs3d:14,abs3dPct:0.5,days:[59,54,57,58,54]},
-  {name:"זבולון",sector:"בדואי",mefakech:"ערבי ב׳",students:2560,w1Pct:55,w2Pct:49,w1AbsPct:24,w2AbsPct:25,trend:-6,abs3d:832,abs3dPct:32.5,days:[52,51,50,52,38]},
-  {name:"זכרון יעקב",sector:"יהודי",mefakech:"צפון",students:4673,w1Pct:56,w2Pct:54,w1AbsPct:25,w2AbsPct:24,trend:-2,abs3d:558,abs3dPct:11.9,days:[60,57,59,46,48]},
-  {name:"חדרה",sector:"יהודי",mefakech:"צפון",students:17281,w1Pct:62,w2Pct:62,w1AbsPct:19,w2AbsPct:18,trend:0,abs3d:2340,abs3dPct:13.5,days:[67,62,64,60,59]},
-  {name:"חוף הכרמל",sector:"יהודי",mefakech:"כרמל ודרום",students:4112,w1Pct:54,w2Pct:52,w1AbsPct:23,w2AbsPct:24,trend:-2,abs3d:267,abs3dPct:6.5,days:[54,52,51,55,48]},
-  {name:"חיפה",sector:"יהודי",mefakech:"חיפה",students:39133,w1Pct:57,w2Pct:56,w1AbsPct:24,w2AbsPct:25,trend:-1,abs3d:4717,abs3dPct:12.1,days:[52,58,58,57,56]},
-  {name:"חריש",sector:"יהודי",mefakech:"צפון",students:7284,w1Pct:51,w2Pct:54,w1AbsPct:10,w2AbsPct:9,trend:3,abs3d:2516,abs3dPct:34.5,days:[56,58,56,55,46]},
-  {name:"טירת כרמל",sector:"יהודי",mefakech:"כרמל ודרום",students:4642,w1Pct:59,w2Pct:56,w1AbsPct:20,w2AbsPct:21,trend:-3,abs3d:471,abs3dPct:10.1,days:[57,56,57,56,52]},
-  {name:"כפר קרע",sector:"ערבי",mefakech:"ערבי א׳",students:5075,w1Pct:62,w2Pct:52,w1AbsPct:22,w2AbsPct:17,trend:-10,abs3d:4351,abs3dPct:85.7,days:[66,57,62,62,13]},
-  {name:"מנשה",sector:"יהודי",mefakech:"צפון",students:3103,w1Pct:74,w2Pct:70,w1AbsPct:9,w2AbsPct:5,trend:-4,abs3d:1048,abs3dPct:33.8,days:[76,70,71,76,57]},
-  {name:"מעלה עירון",sector:"ערבי",mefakech:"ערבי א׳",students:3187,w1Pct:38,w2Pct:35,w1AbsPct:47,w2AbsPct:33,trend:-3,abs3d:2822,abs3dPct:88.5,days:[41,41,37,42,11]},
-  {name:"נשר",sector:"יהודי",mefakech:"חיפה",students:2520,w1Pct:58,w2Pct:47,w1AbsPct:22,w2AbsPct:26,trend:-11,abs3d:247,abs3dPct:9.8,days:[51,45,47,48,45]},
-  {name:"עספיא",sector:"דרוזי",mefakech:"דרוזי",students:2440,w1Pct:53,w2Pct:51,w1AbsPct:27,w2AbsPct:30,trend:-2,abs3d:129,abs3dPct:5.3,days:[52,54,52,54,45]},
-  {name:"ערערה",sector:"ערבי",mefakech:"ערבי א׳",students:3971,w1Pct:57,w2Pct:44,w1AbsPct:20,w2AbsPct:13,trend:-13,abs3d:3905,abs3dPct:98.3,days:[60,50,55,55,0]},
-  {name:"פוריידיס",sector:"ערבי",mefakech:"ערבי ב׳",students:3276,w1Pct:47,w2Pct:43,w1AbsPct:35,w2AbsPct:26,trend:-4,abs3d:2773,abs3dPct:84.6,days:[50,51,48,53,15]},
-  {name:"פרדס חנה-כרכור",sector:"יהודי",mefakech:"צפון",students:9141,w1Pct:60,w2Pct:60,w1AbsPct:14,w2AbsPct:13,trend:0,abs3d:1220,abs3dPct:13.3,days:[63,60,61,59,56]},
-  {name:"קרית אתא",sector:"יהודי",mefakech:"קריות",students:8363,w1Pct:60,w2Pct:57,w1AbsPct:25,w2AbsPct:24,trend:-3,abs3d:925,abs3dPct:11.1,days:[61,57,58,56,52]},
-  {name:"קרית ביאליק",sector:"יהודי",mefakech:"קריות",students:7241,w1Pct:65,w2Pct:60,w1AbsPct:21,w2AbsPct:24,trend:-5,abs3d:581,abs3dPct:8,days:[66,61,62,59,54]},
-  {name:"קרית טבעון",sector:"יהודי",mefakech:"קריות",students:2981,w1Pct:67,w2Pct:65,w1AbsPct:17,w2AbsPct:16,trend:-2,abs3d:774,abs3dPct:26,days:[73,69,68,66,49]},
-  {name:"קרית ים",sector:"יהודי",mefakech:"קריות",students:4981,w1Pct:63,w2Pct:59,w1AbsPct:20,w2AbsPct:27,trend:-4,abs3d:440,abs3dPct:8.8,days:[61,60,59,57,58]},
-  {name:"קרית מוצקין",sector:"יהודי",mefakech:"קריות",students:8381,w1Pct:65,w2Pct:65,w1AbsPct:20,w2AbsPct:24,trend:0,abs3d:512,abs3dPct:6.1,days:[70,63,66,62,63]},
-  {name:"רכסים",sector:"יהודי",mefakech:"קריות",students:90,w1Pct:82,w2Pct:84,w1AbsPct:12,w2AbsPct:9,trend:2,abs3d:8,abs3dPct:8.9,days:[74,87,90,86,84]},
+  {name:"אום אל-פחם",sector:"ערבי",mefakech:"אימאן מחאג'נה",mosadot:31,students:13946,w1Pct:50,w2Pct:37,w1AbsPct:24,w2AbsPct:18,trend:-13,abs3d:12250,abs3dPct:87.8,days:[46,40,43,42,12],w1Notrep:587,w1Abs3:987,notrepDays:[1069,1092,1213,1315,0],abs3Days:[752,776,691,1843,12250]},
+  {name:"אור עקיבא",sector:"יהודי",mefakech:"שחק סגל",mosadot:10,students:4511,w1Pct:55,w2Pct:54,w1AbsPct:22,w2AbsPct:25,trend:-1,abs3d:591,abs3dPct:13.1,days:[56,53,59,51,50],w1Notrep:381,w1Abs3:116,notrepDays:[128,111,67,69,91],abs3Days:[244,396,329,498,591]},
+  {name:"אלונה",sector:"יהודי",mefakech:"רון חיים פכטר",mosadot:1,students:295,w1Pct:58,w2Pct:68,w1AbsPct:0,w2AbsPct:1,trend:10,abs3d:53,abs3dPct:18,days:[81,65,53,73,65],w1Notrep:67,w1Abs3:9,notrepDays:[15,15,13,13,19],abs3Days:[0,28,79,33,53]},
+  {name:"באקה אל-גרביה",sector:"ערבי",mefakech:"סמאהר זינה",mosadot:17,students:6946,w1Pct:49,w2Pct:44,w1AbsPct:35,w2AbsPct:30,trend:-5,abs3d:4946,abs3dPct:71.2,days:[51,45,48,45,29],w1Notrep:292,w1Abs3:159,notrepDays:[177,151,169,185,0],abs3Days:[159,212,261,567,4946]},
+  {name:"בנימינה גבעת עדה",sector:"יהודי",mefakech:"חגית שהם שרף",mosadot:7,students:3373,w1Pct:57,w2Pct:60,w1AbsPct:14,w2AbsPct:17,trend:3,abs3d:487,abs3dPct:14.4,days:[63,61,58,62,55],w1Notrep:320,w1Abs3:128,notrepDays:[136,148,167,200,158],abs3Days:[227,134,162,100,487]},
+  {name:'בסמ"ה',sector:"ערבי",mefakech:"אחמד כבהה",mosadot:8,students:2746,w1Pct:42,w2Pct:39,w1AbsPct:41,w2AbsPct:29,trend:-3,abs3d:2243,abs3dPct:81.7,days:[46,41,42,47,18],w1Notrep:121,w1Abs3:72,notrepDays:[87,73,76,32,0],abs3Days:[112,236,140,171,2243]},
+  {name:"ג'סר א-זרקא",sector:"ערבי",mefakech:"סאלח טאהא",mosadot:8,students:3476,w1Pct:35,w2Pct:41,w1AbsPct:33,w2AbsPct:27,trend:6,abs3d:989,abs3dPct:28.5,days:[34,34,30,36,70],w1Notrep:215,w1Abs3:347,notrepDays:[330,277,356,310,0],abs3Days:[74,49,105,101,989]},
+  {name:"ג'ת",sector:"ערבי",mefakech:"סמאהר זינה",mosadot:6,students:2539,w1Pct:42,w2Pct:33,w1AbsPct:30,w2AbsPct:26,trend:-9,abs3d:2484,abs3dPct:97.8,days:[40,36,43,45,2],w1Notrep:24,w1Abs3:290,notrepDays:[330,206,142,100,0],abs3Days:[22,150,62,85,2484]},
+  {name:"דאלית אל-כרמל",sector:"דרוזי",mefakech:"זלי מרון",mosadot:7,students:2571,w1Pct:72,w2Pct:57,w1AbsPct:17,w2AbsPct:28,trend:-15,abs3d:14,abs3dPct:0.5,days:[59,54,57,58,54],w1Notrep:20,w1Abs3:79,notrepDays:[86,112,132,103,92],abs3Days:[2,2,50,13,14]},
+  {name:"זבולון",sector:"בדואי",mefakech:"דברת עיני",mosadot:13,students:2560,w1Pct:55,w2Pct:49,w1AbsPct:24,w2AbsPct:25,trend:-6,abs3d:832,abs3dPct:32.5,days:[52,51,50,52,38],w1Notrep:169,w1Abs3:82,notrepDays:[123,102,99,106,83],abs3Days:[148,149,115,261,832]},
+  {name:"זכרון יעקב",sector:"יהודי",mefakech:"דברת עיני",mosadot:12,students:4673,w1Pct:56,w2Pct:54,w1AbsPct:25,w2AbsPct:24,trend:-2,abs3d:558,abs3dPct:11.9,days:[60,57,59,46,48],w1Notrep:262,w1Abs3:103,notrepDays:[116,130,96,147,158],abs3Days:[190,180,190,620,558]},
+  {name:"חדרה",sector:"יהודי",mefakech:"יעל בלום",mosadot:39,students:17281,w1Pct:62,w2Pct:62,w1AbsPct:19,w2AbsPct:18,trend:0,abs3d:2340,abs3dPct:13.5,days:[67,62,64,60,59],w1Notrep:1841,w1Abs3:439,notrepDays:[488,531,585,659,726],abs3Days:[759,1426,1109,1997,2340]},
+  {name:"חוף הכרמל",sector:"יהודי",mefakech:"רחלי ארז",mosadot:11,students:4112,w1Pct:54,w2Pct:52,w1AbsPct:23,w2AbsPct:24,trend:-2,abs3d:267,abs3dPct:6.5,days:[54,52,51,55,48],w1Notrep:115,w1Abs3:186,notrepDays:[335,282,321,244,180],abs3Days:[106,56,198,124,267]},
+  {name:"חיפה",sector:"יהודי",mefakech:"מירה ספיבק יובל",mosadot:94,students:39133,w1Pct:57,w2Pct:56,w1AbsPct:24,w2AbsPct:25,trend:-1,abs3d:4717,abs3dPct:12.1,days:[52,58,58,57,56],w1Notrep:3537,w1Abs3:656,notrepDays:[660,714,831,1036,838],abs3Days:[6491,1363,1561,2101,4717]},
+  {name:"חריש",sector:"יהודי",mefakech:"יוסף שטרית",mosadot:18,students:7284,w1Pct:51,w2Pct:54,w1AbsPct:10,w2AbsPct:9,trend:3,abs3d:2516,abs3dPct:34.5,days:[56,58,56,55,46],w1Notrep:1396,w1Abs3:268,notrepDays:[397,344,347,343,260],abs3Days:[1140,1179,1236,1297,2516]},
+  {name:"טירת כרמל",sector:"יהודי",mefakech:"אירית פז",mosadot:11,students:4642,w1Pct:59,w2Pct:56,w1AbsPct:20,w2AbsPct:21,trend:-3,abs3d:471,abs3dPct:10.1,days:[57,56,57,56,52],w1Notrep:287,w1Abs3:202,notrepDays:[299,258,267,312,310],abs3Days:[291,277,235,299,471]},
+  {name:"כפר קרע",sector:"ערבי",mefakech:"אזל מלק",mosadot:12,students:5075,w1Pct:62,w2Pct:52,w1AbsPct:22,w2AbsPct:17,trend:-10,abs3d:4351,abs3dPct:85.7,days:[66,57,62,62,13],w1Notrep:215,w1Abs3:163,notrepDays:[73,61,59,89,4],abs3Days:[190,366,290,394,4351]},
+  {name:"מנשה",sector:"יהודי",mefakech:"סאלח טאהא",mosadot:10,students:3103,w1Pct:74,w2Pct:70,w1AbsPct:9,w2AbsPct:5,trend:-4,abs3d:1048,abs3dPct:33.8,days:[76,70,71,76,57],w1Notrep:292,w1Abs3:27,notrepDays:[48,34,37,23,24],abs3Days:[252,617,467,276,1048]},
+  {name:"מעלה עירון",sector:"ערבי",mefakech:"אזל מלק",mosadot:8,students:3187,w1Pct:38,w2Pct:35,w1AbsPct:47,w2AbsPct:33,trend:-3,abs3d:2822,abs3dPct:88.5,days:[41,41,37,42,11],w1Notrep:57,w1Abs3:83,notrepDays:[148,111,89,95,0],abs3Days:[22,98,86,324,2822]},
+  {name:"נשר",sector:"יהודי",mefakech:"רון חיים פכטר",mosadot:8,students:2520,w1Pct:58,w2Pct:47,w1AbsPct:22,w2AbsPct:26,trend:-11,abs3d:247,abs3dPct:9.8,days:[51,45,47,48,45],w1Notrep:140,w1Abs3:72,notrepDays:[116,96,93,107,124],abs3Days:[261,267,195,172,247]},
+  {name:"עספיא",sector:"דרוזי",mefakech:"זלי מרון",mosadot:6,students:2440,w1Pct:53,w2Pct:51,w1AbsPct:27,w2AbsPct:30,trend:-2,abs3d:129,abs3dPct:5.3,days:[52,54,52,54,45],w1Notrep:77,w1Abs3:110,notrepDays:[128,107,94,90,105],abs3Days:[15,113,39,97,129]},
+  {name:"ערערה",sector:"ערבי",mefakech:"סאלח טאהא",mosadot:10,students:3971,w1Pct:57,w2Pct:44,w1AbsPct:20,w2AbsPct:13,trend:-13,abs3d:3905,abs3dPct:98.3,days:[60,50,55,55,0],w1Notrep:275,w1Abs3:192,notrepDays:[196,163,216,206,0],abs3Days:[184,719,253,585,3905]},
+  {name:"פוריידיס",sector:"ערבי",mefakech:"אימאן מחאג'נה",mosadot:7,students:3276,w1Pct:47,w2Pct:43,w1AbsPct:35,w2AbsPct:26,trend:-4,abs3d:2773,abs3dPct:84.6,days:[50,51,48,53,15],w1Notrep:116,w1Abs3:137,notrepDays:[18,11,92,117,0],abs3Days:[71,103,224,100,2773]},
+  {name:"פרדס חנה-כרכור",sector:"יהודי",mefakech:"דברת עיני",mosadot:27,students:9141,w1Pct:60,w2Pct:60,w1AbsPct:14,w2AbsPct:13,trend:0,abs3d:1220,abs3dPct:13.3,days:[63,60,61,59,56],w1Notrep:1048,w1Abs3:303,notrepDays:[430,393,382,445,462],abs3Days:[729,1146,912,1115,1220]},
+  {name:"קרית אתא",sector:"יהודי",mefakech:"דברת עיני",mosadot:18,students:8363,w1Pct:60,w2Pct:57,w1AbsPct:25,w2AbsPct:24,trend:-3,abs3d:925,abs3dPct:11.1,days:[61,57,58,56,52],w1Notrep:423,w1Abs3:155,notrepDays:[216,221,211,240,226],abs3Days:[419,538,443,461,925]},
+  {name:"קרית ביאליק",sector:"יהודי",mefakech:"רון חיים פכטר",mosadot:15,students:7241,w1Pct:65,w2Pct:60,w1AbsPct:21,w2AbsPct:24,trend:-5,abs3d:581,abs3dPct:8,days:[66,61,62,59,54],w1Notrep:298,w1Abs3:74,notrepDays:[106,201,178,212,252],abs3Days:[259,119,174,166,581]},
+  {name:"קרית טבעון",sector:"יהודי",mefakech:"לימור בן יוסף",mosadot:7,students:2981,w1Pct:67,w2Pct:65,w1AbsPct:17,w2AbsPct:16,trend:-2,abs3d:774,abs3dPct:26,days:[73,69,68,66,49],w1Notrep:166,w1Abs3:46,notrepDays:[49,55,44,65,81],abs3Days:[129,91,147,132,774]},
+  {name:"קרית ים",sector:"יהודי",mefakech:"לימור בן יוסף",mosadot:12,students:4981,w1Pct:63,w2Pct:59,w1AbsPct:20,w2AbsPct:27,trend:-4,abs3d:440,abs3dPct:8.8,days:[61,60,59,57,58],w1Notrep:195,w1Abs3:129,notrepDays:[162,116,106,96,126],abs3Days:[97,169,183,185,440]},
+  {name:"קרית מוצקין",sector:"יהודי",mefakech:"דברת עיני",mosadot:16,students:8381,w1Pct:65,w2Pct:65,w1AbsPct:20,w2AbsPct:24,trend:0,abs3d:512,abs3dPct:6.1,days:[70,63,66,62,63],w1Notrep:445,w1Abs3:127,notrepDays:[125,119,101,117,140],abs3Days:[210,184,232,358,512]},
+  {name:"רכסים",sector:"יהודי",mefakech:"דברת עיני",mosadot:1,students:90,w1Pct:82,w2Pct:84,w1AbsPct:12,w2AbsPct:9,trend:2,abs3d:8,abs3dPct:8.9,days:[74,87,90,86,84],w1Notrep:3,w1Abs3:1,notrepDays:[0,0,0,0,0],abs3Days:[0,0,7,0,8]},
 ];
 
 const DAILY_DATA = [
@@ -497,6 +518,39 @@ const SHLAV_DATA = [
   {name:"תיכון", stu:19946,  w1Pct:55, w2Pct:48, lastPct:41},
   {name:'ח"מ',   stu:4881,   w1Pct:69, w2Pct:68, lastPct:60},
 ];
+
+const SHLAV_BY_RASHUT = {
+"אום אל-פחם":{y:{s:7189,w1:48,w2:37},c:{s:751,w1:28,w2:16},t:{s:5959,w1:56,w2:38},m:{s:47,w1:20,w2:31}},
+"אור עקיבא":{y:{s:2317,w1:52,w2:57},c:{s:0,w1:0,w2:0},t:{s:2194,w1:57,w2:51},m:{s:0,w1:0,w2:0}},
+"אלונה":{y:{s:295,w1:58,w2:68},c:{s:0,w1:0,w2:0},t:{s:0,w1:0,w2:0},m:{s:0,w1:0,w2:0}},
+"באקה אל-גרביה":{y:{s:3693,w1:53,w2:44},c:{s:0,w1:0,w2:0},t:{s:3253,w1:45,w2:43},m:{s:0,w1:0,w2:0}},
+"בנימינה גבעת עדה":{y:{s:1591,w1:63,w2:59},c:{s:0,w1:0,w2:0},t:{s:1781,w1:52,w2:61},m:{s:0,w1:0,w2:0}},
+'בסמ"ה':{y:{s:1526,w1:44,w2:44},c:{s:643,w1:37,w2:28},t:{s:577,w1:44,w2:37},m:{s:0,w1:0,w2:0}},
+"ג'סר א-זרקא":{y:{s:1875,w1:40,w2:46},c:{s:299,w1:41,w2:53},t:{s:1302,w1:26,w2:30},m:{s:0,w1:0,w2:0}},
+"ג'ת":{y:{s:1387,w1:29,w2:24},c:{s:586,w1:25,w2:20},t:{s:566,w1:90,w2:70},m:{s:0,w1:0,w2:0}},
+"דאלית אל-כרמל":{y:{s:1407,w1:57,w2:60},c:{s:583,w1:79,w2:81},t:{s:581,w1:100,w2:23},m:{s:0,w1:0,w2:0}},
+"זבולון":{y:{s:1364,w1:59,w2:52},c:{s:0,w1:0,w2:0},t:{s:1195,w1:50,w2:45},m:{s:0,w1:0,w2:0}},
+"זכרון יעקב":{y:{s:2599,w1:62,w2:58},c:{s:0,w1:0,w2:0},t:{s:2074,w1:49,w2:50},m:{s:0,w1:0,w2:0}},
+"חדרה":{y:{s:8921,w1:66,w2:71},c:{s:0,w1:0,w2:0},t:{s:8357,w1:56,w2:53},m:{s:0,w1:0,w2:0}},
+"חוף הכרמל":{y:{s:3826,w1:53,w2:51},c:{s:286,w1:59,w2:72},t:{s:0,w1:0,w2:0},m:{s:0,w1:0,w2:0}},
+"חיפה":{y:{s:21115,w1:60,w2:61},c:{s:1456,w1:50,w2:49},t:{s:16562,w1:53,w2:51},m:{s:0,w1:0,w2:0}},
+"חריש":{y:{s:5054,w1:58,w2:62},c:{s:0,w1:0,w2:0},t:{s:2230,w1:35,w2:35},m:{s:0,w1:0,w2:0}},
+"טירת כרמל":{y:{s:2956,w1:68,w2:63},c:{s:418,w1:85,w2:92},t:{s:1268,w1:29,w2:27},m:{s:0,w1:0,w2:0}},
+"כפר קרע":{y:{s:2433,w1:51,w2:47},c:{s:1026,w1:96,w2:74},t:{s:1615,w1:58,w2:46},m:{s:0,w1:0,w2:0}},
+"מנשה":{y:{s:2746,w1:71,w2:67},c:{s:0,w1:0,w2:0},t:{s:356,w1:100,w2:96},m:{s:0,w1:0,w2:0}},
+"מעלה עירון":{y:{s:1672,w1:39,w2:35},c:{s:266,w1:15,w2:11},t:{s:1249,w1:40,w2:38},m:{s:0,w1:0,w2:0}},
+"נשר":{y:{s:1324,w1:53,w2:49},c:{s:622,w1:78,w2:54},t:{s:574,w1:47,w2:36},m:{s:0,w1:0,w2:0}},
+"עספיא":{y:{s:1257,w1:56,w2:56},c:{s:0,w1:0,w2:0},t:{s:1183,w1:51,w2:47},m:{s:0,w1:0,w2:0}},
+"ערערה":{y:{s:2117,w1:58,w2:47},c:{s:402,w1:27,w2:15},t:{s:1452,w1:64,w2:48},m:{s:0,w1:0,w2:0}},
+"פוריידיס":{y:{s:1664,w1:56,w2:60},c:{s:0,w1:0,w2:0},t:{s:1612,w1:38,w2:26},m:{s:0,w1:0,w2:0}},
+"פרדס חנה-כרכור":{y:{s:5416,w1:59,w2:61},c:{s:80,w1:30,w2:27},t:{s:3644,w1:60,w2:59},m:{s:0,w1:0,w2:0}},
+"קרית אתא":{y:{s:4476,w1:67,w2:64},c:{s:1670,w1:51,w2:50},t:{s:2217,w1:51,w2:47},m:{s:0,w1:0,w2:0}},
+"קרית ביאליק":{y:{s:3819,w1:74,w2:71},c:{s:1788,w1:52,w2:44},t:{s:1633,w1:60,w2:53},m:{s:0,w1:0,w2:0}},
+"קרית טבעון":{y:{s:1701,w1:80,w2:77},c:{s:0,w1:0,w2:0},t:{s:1280,w1:50,w2:50},m:{s:0,w1:0,w2:0}},
+"קרית ים":{y:{s:2617,w1:76,w2:72},c:{s:400,w1:34,w2:30},t:{s:1964,w1:53,w2:48},m:{s:0,w1:0,w2:0}},
+"קרית מוצקין":{y:{s:4353,w1:69,w2:71},c:{s:1691,w1:55,w2:52},t:{s:2337,w1:64,w2:63},m:{s:0,w1:0,w2:0}},
+"רכסים":{y:{s:0,w1:0,w2:0},c:{s:0,w1:0,w2:0},t:{s:90,w1:82,w2:84},m:{s:0,w1:0,w2:0}},
+};
 
 const MIVZAR_DATA = [
   {name:'יהודי', stu:127181, w2Pct:59, lastPct:54},
@@ -553,15 +607,38 @@ function updateKPIs() {
     const getAbs = r => activeWeek===1 ? r.w1AbsPct: activeWeek===2 ? r.w2AbsPct: Math.round((r.w1AbsPct+r.w2AbsPct)/2);
     faAvg    = totalStu>0 ? Math.round(src.reduce((s,r)=>s+r.students*getFa(r), 0)/totalStu) : 0;
     absAvg   = totalStu>0 ? Math.round(src.reduce((s,r)=>s+r.students*getAbs(r),0)/totalStu) : 0;
-    abs3Text = fmt(src.reduce((s,r)=>s+r.abs3d,0));
-    abs3Sub  = "ה׳ 19/03";
-    notrepText = '—';
+    const w1a3 = Math.round(src.reduce((s,r)=>s+r.w1Abs3,0)/5);
+    const w2a3 = Math.round(src.reduce((s,r)=>s+r.abs3Days.reduce((a,b)=>a+b,0),0)/5);
+    abs3Text = fmt(activeWeek===1 ? w1a3 : activeWeek===2 ? w2a3 : Math.round((w1a3+w2a3)/2));
+    abs3Sub  = lblDaily;
+    const w1nr = Math.round(src.reduce((s,r)=>s+r.w1Notrep,0)/5);
+    const w2nr = Math.round(src.reduce((s,r)=>s+r.notrepDays.reduce((a,b)=>a+b,0),0)/5);
+    notrepText = fmt(activeWeek===1 ? w1nr : activeWeek===2 ? w2nr : Math.round((w1nr+w2nr)/2));
   } else {
     faAvg    = Math.round(activeD.reduce((s,d)=>s+d.faPct, 0)/activeD.length);
     absAvg   = Math.round(activeD.reduce((s,d)=>s+d.fabsPct,0)/activeD.length);
     abs3Text = fmt(Math.round(activeD.reduce((s,d)=>s+d.abs3,  0)/activeD.length));
     abs3Sub  = lblDaily;
     notrepText = fmt(Math.round(activeD.reduce((s,d)=>s+d.notrep,0)/activeD.length));
+  }
+
+  // Students & authorities KPI
+  const totalDistrict = RESHUT_DATA.reduce((s,r)=>s+r.students,0);
+  const filtStu   = filteredData.reduce((s,r)=>s+r.students,0);
+  const filtCount = filteredData.length;
+  const totalCount = RESHUT_DATA.length;
+  const totalMos = RESHUT_DATA.reduce((s,r)=>s+r.mosadot,0);
+  const filtMos  = filteredData.reduce((s,r)=>s+r.mosadot,0);
+  if (isFiltered()) {
+    document.getElementById('kpi-stu-val').textContent = fmt(filtStu);
+    document.getElementById('kpi-stu-sub').textContent = `מתוך ${fmt(totalDistrict)} במחוז`;
+    document.getElementById('kpi-mos-val').textContent = filtMos;
+    document.getElementById('kpi-mos-sub').textContent = `${filtCount} מתוך ${totalCount} רשויות`;
+  } else {
+    document.getElementById('kpi-stu-val').textContent = fmt(totalDistrict);
+    document.getElementById('kpi-stu-sub').textContent = 'סה"כ במחוז';
+    document.getElementById('kpi-mos-val').textContent = fmt(totalMos);
+    document.getElementById('kpi-mos-sub').textContent = `${totalCount} רשויות פעילות`;
   }
 
   document.getElementById('kpi-fa').textContent = faAvg + '%';
@@ -589,56 +666,143 @@ function updateKPIs() {
 // ── DAILY TABLE ───────────────────────────────────────────────
 function renderDailyTable() {
   let html = '';
-  let w1fa=0,w1stu=0,w1abs=0,w2fa=0,w2stu=0,w2abs=0;
-  DAILY_DATA.forEach((d,i) => {
-    if (i === 5) {
-      // Week avg row
-      const a1fP = Math.round(w1fa*100/w1stu), a1aP = Math.round(w1abs*100/w1stu);
-      html += `<tr class="avg-row"><td colspan="9" style="text-align:center;font-size:11px;color:var(--blue);padding:3px;">
-        ─── שבוע א׳ ממוצע: נוכחות <span class="${pct(a1fP)}">${a1fP}%</span> · היעדרות ${a1aP}% ───
-      </td></tr>`;
-      html += `<tr class="week-sep"><td colspan="9">── שבוע ב׳: 15–19/03 ──</td></tr>`;
-    }
-    const fBar  = `<div class="inline-bar"><div class="ib-track"><div class="ib-fill" style="width:${d.faPct}%;background:${d.faPct>=60?'var(--green)':d.faPct>=40?'var(--orange)':'var(--red)'}"></div></div></div>`;
-    const aBar  = `<div class="inline-bar"><div class="ib-track"><div class="ib-fill" style="width:${d.fabsPct}%;background:var(--red)"></div></div></div>`;
-    html += `<tr>
-      <td class="date-cell num-mono">${d.date}</td>
-      <td class="num-mono">${d.mosadot}</td>
-      <td class="num-mono">${fmt(d.stu)}</td>
-      <td class="num-mono">${fmt(d.fa)}</td>
-      <td>${fBar}<span class="${pct(d.faPct)}" style="font-size:11px;font-weight:700;">${d.faPct}%</span></td>
-      <td class="num-mono">${fmt(d.fabs)}</td>
-      <td><span class="pct-r" style="font-size:11px;font-weight:700;">${d.fabsPct}%</span></td>
-      <td class="num-mono" style="color:var(--orange);">${fmt(d.notrep)}</td>
-      <td class="num-mono" style="color:var(--red);font-weight:700;">${fmt(d.abs3)}</td>
+  const w2Dates = ['א׳ 15/03','ב׳ 16/03','ג׳ 17/03','ד׳ 18/03','ה׳ 19/03'];
+
+  if (isFiltered() && filteredData.length > 0) {
+    // Week 1: single aggregate row from w1Pct weighted average
+    const filtStu   = filteredData.reduce((s,r)=>s+r.students,0);
+    const w1faPct   = filtStu>0 ? Math.round(filteredData.reduce((s,r)=>s+r.students*r.w1Pct,0)/filtStu) : 0;
+    const w1absPct  = filtStu>0 ? Math.round(filteredData.reduce((s,r)=>s+r.students*r.w1AbsPct,0)/filtStu) : 0;
+    const filtMos   = filteredData.reduce((s,r)=>s+r.mosadot,0);
+    const w1fa      = Math.round(filtStu * w1faPct / 100);
+    const w1fabs    = Math.round(filtStu * w1absPct / 100);
+    const fBar1 = `<div class="inline-bar"><div class="ib-track"><div class="ib-fill" style="width:${w1faPct}%;background:${w1faPct>=60?'var(--green)':w1faPct>=40?'var(--orange)':'var(--red)'}"></div></div></div>`;
+    html += `<tr class="week-sep"><td colspan="9">── שבוע א׳: 08–12/03 ──</td></tr>`;
+    const w1Notrep = filteredData.reduce((s,r)=>s+r.w1Notrep,0);
+    const w1Abs3   = filteredData.reduce((s,r)=>s+r.w1Abs3,0);
+    html += `<tr class="avg-row">
+      <td class="date-cell num-mono" style="font-size:10.5px;">ממוצע שב׳ א׳</td>
+      <td class="num-mono">${filtMos}</td>
+      <td class="num-mono">${fmt(filtStu)}</td>
+      <td class="num-mono">${fmt(w1fa)}</td>
+      <td>${fBar1}<span class="${pct(w1faPct)}" style="font-size:11px;font-weight:700;">${w1faPct}%</span></td>
+      <td class="num-mono">${fmt(w1fabs)}</td>
+      <td><span class="pct-r" style="font-size:11px;font-weight:700;">${w1absPct}%</span></td>
+      <td class="num-mono" style="color:var(--orange)">${fmt(w1Notrep)}</td>
+      <td class="num-mono" style="color:var(--red);font-weight:700;">${fmt(w1Abs3)}</td>
     </tr>`;
-    if (d.week===1) { w1fa+=d.fa; w1stu+=d.stu; w1abs+=d.fabs; }
-    else            { w2fa+=d.fa; w2stu+=d.stu; w2abs+=d.fabs; }
-  });
-  // Week 2 avg + Total
-  const a2fP = Math.round(w2fa*100/w2stu), a2aP = Math.round(w2abs*100/w2stu);
-  html += `<tr class="avg-row"><td colspan="9" style="text-align:center;font-size:11px;color:var(--blue);padding:3px;">
-    ─── שבוע ב׳ ממוצע: נוכחות <span class="${pct(a2fP)}">${a2fP}%</span> · היעדרות ${a2aP}% ───
-  </td></tr>`;
+    // Week 2: 5 days from days[] array
+    html += `<tr class="week-sep"><td colspan="9">── שבוע ב׳: 15–19/03 ──</td></tr>`;
+    let w2fa=0,w2fabs=0;
+    filteredData[0].days.forEach((_, dayIdx) => {
+      const dayPct    = filtStu>0 ? Math.round(filteredData.reduce((s,r)=>s+r.students*r.days[dayIdx],0)/filtStu) : 0;
+      const dayAbsPct = filtStu>0 ? Math.round(filteredData.reduce((s,r)=>s+r.students*r.w2AbsPct,0)/filtStu) : 0;
+      const dayFa     = Math.round(filtStu * dayPct / 100);
+      const dayFabs   = Math.round(filtStu * dayAbsPct / 100);
+      const dayNotrep = filteredData.reduce((s,r)=>s+r.notrepDays[dayIdx],0);
+      const dayAbs3   = filteredData.reduce((s,r)=>s+r.abs3Days[dayIdx],0);
+      w2fa += dayFa; w2fabs += dayFabs;
+      const fBar = `<div class="inline-bar"><div class="ib-track"><div class="ib-fill" style="width:${dayPct}%;background:${dayPct>=60?'var(--green)':dayPct>=40?'var(--orange)':'var(--red)'}"></div></div></div>`;
+      html += `<tr>
+        <td class="date-cell num-mono">${w2Dates[dayIdx]}</td>
+        <td class="num-mono">${filtMos}</td>
+        <td class="num-mono">${fmt(filtStu)}</td>
+        <td class="num-mono">${fmt(dayFa)}</td>
+        <td>${fBar}<span class="${pct(dayPct)}" style="font-size:11px;font-weight:700;">${dayPct}%</span></td>
+        <td class="num-mono">${fmt(dayFabs)}</td>
+        <td><span class="pct-r" style="font-size:11px;font-weight:700;">${dayAbsPct}%</span></td>
+        <td class="num-mono" style="color:var(--orange)">${fmt(dayNotrep)}</td>
+        <td class="num-mono" style="color:var(--red);font-weight:700;">${fmt(dayAbs3)}</td>
+      </tr>`;
+    });
+    const w2faPct  = filtStu>0 ? Math.round(filteredData.reduce((s,r)=>s+r.students*r.w2Pct,0)/filtStu) : 0;
+    const w2absPct = filtStu>0 ? Math.round(filteredData.reduce((s,r)=>s+r.students*r.w2AbsPct,0)/filtStu) : 0;
+    html += `<tr class="avg-row"><td colspan="9" style="text-align:center;font-size:11px;color:var(--blue);padding:3px;">
+      ─── שבוע ב׳ ממוצע: נוכחות <span class="${pct(w2faPct)}">${w2faPct}%</span> · היעדרות ${w2absPct}% ───
+    </td></tr>`;
+  } else {
+    let w1fa=0,w1stu=0,w1abs=0,w2fa=0,w2stu=0,w2abs=0;
+    DAILY_DATA.forEach((d,i) => {
+      if (i === 5) {
+        const a1fP = Math.round(w1fa*100/w1stu), a1aP = Math.round(w1abs*100/w1stu);
+        html += `<tr class="avg-row"><td colspan="9" style="text-align:center;font-size:11px;color:var(--blue);padding:3px;">
+          ─── שבוע א׳ ממוצע: נוכחות <span class="${pct(a1fP)}">${a1fP}%</span> · היעדרות ${a1aP}% ───
+        </td></tr>`;
+        html += `<tr class="week-sep"><td colspan="9">── שבוע ב׳: 15–19/03 ──</td></tr>`;
+      }
+      const fBar = `<div class="inline-bar"><div class="ib-track"><div class="ib-fill" style="width:${d.faPct}%;background:${d.faPct>=60?'var(--green)':d.faPct>=40?'var(--orange)':'var(--red)'}"></div></div></div>`;
+      html += `<tr>
+        <td class="date-cell num-mono">${d.date}</td>
+        <td class="num-mono">${d.mosadot}</td>
+        <td class="num-mono">${fmt(d.stu)}</td>
+        <td class="num-mono">${fmt(d.fa)}</td>
+        <td>${fBar}<span class="${pct(d.faPct)}" style="font-size:11px;font-weight:700;">${d.faPct}%</span></td>
+        <td class="num-mono">${fmt(d.fabs)}</td>
+        <td><span class="pct-r" style="font-size:11px;font-weight:700;">${d.fabsPct}%</span></td>
+        <td class="num-mono" style="color:var(--orange);">${fmt(d.notrep)}</td>
+        <td class="num-mono" style="color:var(--red);font-weight:700;">${fmt(d.abs3)}</td>
+      </tr>`;
+      if (d.week===1) { w1fa+=d.fa; w1stu+=d.stu; w1abs+=d.fabs; }
+      else            { w2fa+=d.fa; w2stu+=d.stu; w2abs+=d.fabs; }
+    });
+    const a2fP = Math.round(w2fa*100/w2stu), a2aP = Math.round(w2abs*100/w2stu);
+    html += `<tr class="avg-row"><td colspan="9" style="text-align:center;font-size:11px;color:var(--blue);padding:3px;">
+      ─── שבוע ב׳ ממוצע: נוכחות <span class="${pct(a2fP)}">${a2fP}%</span> · היעדרות ${a2aP}% ───
+    </td></tr>`;
+  }
   document.getElementById('dailyTableBody').innerHTML = html;
 }
 
 // ── SHLAV BREAKDOWN ───────────────────────────────────────────
 function renderShlavBody() {
   let html = '';
-  let totStu=0, totFa=0;
-  SHLAV_DATA.forEach(s => {
-    const v = activeWeek === 0 ? Math.round((s.w1Pct + s.w2Pct) / 2) : s[activeWeek === 1 ? 'w1Pct' : 'w2Pct'];
-    totStu += s.stu;
-    totFa  += Math.round(s.stu * v / 100);
-    html += `<tr>
-      <td style="font-weight:600;">${s.name}</td>
-      <td class="num-mono">${fmt(s.stu)}</td>
-      <td>${barHtml(v, v>=60?'green':v>=40?'orange':'red')}</td>
-    </tr>`;
-  });
-  const totPct = Math.round(totFa*100/totStu);
-  html += `<tr class="total-row"><td>ממוצע כללי</td><td class="num-mono">${fmt(totStu)}</td><td>${barHtml(totPct,'blue')}</td></tr>`;
+  if (isFiltered() && filteredData.length > 0) {
+    const defs = [
+      {key:'y', name:'יסודי'},
+      {key:'c', name:'חט"ב'},
+      {key:'t', name:'תיכון'},
+      {key:'m', name:'ח"מ'}
+    ];
+    let totStu=0, totFa=0;
+    defs.forEach(({key, name}) => {
+      let stu=0, faW1=0, faW2=0;
+      filteredData.forEach(r => {
+        const sd = SHLAV_BY_RASHUT[r.name];
+        if (!sd) return;
+        const s = sd[key];
+        stu  += s.s;
+        faW1 += Math.round(s.s * s.w1 / 100);
+        faW2 += Math.round(s.s * s.w2 / 100);
+      });
+      if (stu === 0) return;
+      const w1Pct = Math.round(faW1*100/stu);
+      const w2Pct = Math.round(faW2*100/stu);
+      const v = activeWeek===0 ? Math.round((w1Pct+w2Pct)/2) : activeWeek===1 ? w1Pct : w2Pct;
+      totStu += stu;
+      totFa  += Math.round(stu * v / 100);
+      html += `<tr>
+        <td style="font-weight:600;">${name}</td>
+        <td class="num-mono">${fmt(stu)}</td>
+        <td>${barHtml(v, v>=60?'green':v>=40?'orange':'red')}</td>
+      </tr>`;
+    });
+    const totPct = totStu>0 ? Math.round(totFa*100/totStu) : 0;
+    html += `<tr class="total-row"><td>ממוצע כללי</td><td class="num-mono">${fmt(totStu)}</td><td>${barHtml(totPct,'blue')}</td></tr>`;
+  } else {
+    let totStu=0, totFa=0;
+    SHLAV_DATA.forEach(s => {
+      const v = activeWeek===0 ? Math.round((s.w1Pct+s.w2Pct)/2) : s[activeWeek===1?'w1Pct':'w2Pct'];
+      totStu += s.stu;
+      totFa  += Math.round(s.stu * v / 100);
+      html += `<tr>
+        <td style="font-weight:600;">${s.name}</td>
+        <td class="num-mono">${fmt(s.stu)}</td>
+        <td>${barHtml(v, v>=60?'green':v>=40?'orange':'red')}</td>
+      </tr>`;
+    });
+    const totPct = Math.round(totFa*100/totStu);
+    html += `<tr class="total-row"><td>ממוצע כללי</td><td class="num-mono">${fmt(totStu)}</td><td>${barHtml(totPct,'blue')}</td></tr>`;
+  }
   document.getElementById('shlavBody').innerHTML = html;
 }
 
@@ -690,36 +854,54 @@ function renderMivzarBody() {
 
 // ── WEEKLY COMPARE ────────────────────────────────────────────
 function renderWeekCompare() {
-  const w1 = DAILY_DATA.filter(d=>d.week===1), w2 = DAILY_DATA.filter(d=>d.week===2);
-  const w1fa  = Math.round(w1.reduce((s,d)=>s+d.faPct,0)/w1.length);
-  const w2fa  = Math.round(w2.reduce((s,d)=>s+d.faPct,0)/w2.length);
-  const w1abs = Math.round(w1.reduce((s,d)=>s+d.fabsPct,0)/w1.length);
-  const w2abs = Math.round(w2.reduce((s,d)=>s+d.fabsPct,0)/w2.length);
-  const w1notrep = Math.round(w1.reduce((s,d)=>s+d.notrep,0)/w1.length);
-  const w2notrep = Math.round(w2.reduce((s,d)=>s+d.notrep,0)/w2.length);
+  let w1fa, w2fa, w1abs, w2abs, w1notrep, w2notrep;
+  if (isFiltered() && filteredData.length > 0) {
+    const src = filteredData;
+    const totalStu = src.reduce((s,r)=>s+r.students,0);
+    w1fa  = totalStu>0 ? Math.round(src.reduce((s,r)=>s+r.students*r.w1Pct,0)/totalStu) : 0;
+    w2fa  = totalStu>0 ? Math.round(src.reduce((s,r)=>s+r.students*r.w2Pct,0)/totalStu) : 0;
+    w1abs = totalStu>0 ? Math.round(src.reduce((s,r)=>s+r.students*r.w1AbsPct,0)/totalStu) : 0;
+    w2abs = totalStu>0 ? Math.round(src.reduce((s,r)=>s+r.students*r.w2AbsPct,0)/totalStu) : 0;
+    w1notrep = Math.round(src.reduce((s,r)=>s+r.w1Notrep,0)/5);
+    w2notrep = Math.round(src.reduce((s,r)=>s+r.notrepDays.reduce((a,b)=>a+b,0),0)/5);
+  } else {
+    const w1 = DAILY_DATA.filter(d=>d.week===1), w2 = DAILY_DATA.filter(d=>d.week===2);
+    w1fa  = Math.round(w1.reduce((s,d)=>s+d.faPct,0)/w1.length);
+    w2fa  = Math.round(w2.reduce((s,d)=>s+d.faPct,0)/w2.length);
+    w1abs = Math.round(w1.reduce((s,d)=>s+d.fabsPct,0)/w1.length);
+    w2abs = Math.round(w2.reduce((s,d)=>s+d.fabsPct,0)/w2.length);
+    w1notrep = Math.round(w1.reduce((s,d)=>s+d.notrep,0)/w1.length);
+    w2notrep = Math.round(w2.reduce((s,d)=>s+d.notrep,0)/w2.length);
+  }
   const diffFa  = w2fa  - w1fa,  diffAbs = w2abs - w1abs;
-  const trend = v => v > 0 ? `<span style="color:var(--green)">▲ +${v}</span>` : v < 0 ? `<span style="color:var(--red)">▼ ${v}</span>` : '—';
   const diffFaColor  = diffFa  >= 0 ? 'var(--green)' : 'var(--red)';
   const diffAbsColor = diffAbs <= 0 ? 'var(--green)' : 'var(--red)';
+  const notrepW2 = w2notrep !== null ? `<div class="wc-num" style="color:var(--orange)">${fmt(w2notrep)}</div>` : `<div class="wc-num" style="color:var(--text3)">—</div>`;
+  const notrepW1 = w1notrep !== null ? `<div class="wc-num" style="color:var(--orange)">${fmt(w1notrep)}</div>` : `<div class="wc-num" style="color:var(--text3)">—</div>`;
+  const notrepDiff = w2notrep !== null && w1notrep !== null
+    ? `<div class="wc-num">${w2notrep-w1notrep>0?'+':''}${fmt(w2notrep-w1notrep)}</div>`
+    : `<div class="wc-num" style="color:var(--text3)">—</div>`;
+  const w2len = DAILY_DATA.filter(d=>d.week===2).length;
+  const w1len = DAILY_DATA.filter(d=>d.week===1).length;
 
   document.getElementById('weekCompare').innerHTML = `
     <div class="wc-row">
-      <div class="wc-label">שבוע ב׳<br><span style="font-size:9.5px;opacity:.7">15–19/03 · ${w2.length} ימים</span></div>
+      <div class="wc-label">שבוע ב׳<br><span style="font-size:9.5px;opacity:.7">15–19/03 · ${w2len} ימים</span></div>
       <div class="wc-stat"><div class="wc-num" style="color:var(--green)">${w2fa}%</div><div class="wc-sub">נוכחות</div></div>
       <div class="wc-stat"><div class="wc-num" style="color:var(--red)">${w2abs}%</div><div class="wc-sub">היעדרות</div></div>
-      <div class="wc-stat"><div class="wc-num" style="color:var(--orange)">${fmt(w2notrep)}</div><div class="wc-sub">לא דווחו</div></div>
+      <div class="wc-stat">${notrepW2}<div class="wc-sub">לא דווחו</div></div>
     </div>
     <div class="wc-row">
-      <div class="wc-label">שבוע א׳<br><span style="font-size:9.5px;opacity:.7">08–12/03 · ${w1.length} ימים</span></div>
+      <div class="wc-label">שבוע א׳<br><span style="font-size:9.5px;opacity:.7">08–12/03 · ${w1len} ימים</span></div>
       <div class="wc-stat"><div class="wc-num" style="color:var(--green)">${w1fa}%</div><div class="wc-sub">נוכחות</div></div>
       <div class="wc-stat"><div class="wc-num" style="color:var(--red)">${w1abs}%</div><div class="wc-sub">היעדרות</div></div>
-      <div class="wc-stat"><div class="wc-num" style="color:var(--orange)">${fmt(w1notrep)}</div><div class="wc-sub">לא דווחו</div></div>
+      <div class="wc-stat">${notrepW1}<div class="wc-sub">לא דווחו</div></div>
     </div>
     <div class="wc-row diff-row">
       <div class="wc-label">שינוי<br><span style="font-size:9.5px;opacity:.8">ב׳ לעומת א׳</span></div>
       <div class="wc-stat"><div class="wc-num" style="color:${diffFaColor}">${diffFa>0?'+':''}${diffFa}%</div><div class="wc-sub">נוכחות</div></div>
       <div class="wc-stat"><div class="wc-num" style="color:${diffAbsColor}">${diffAbs>0?'+':''}${diffAbs}%</div><div class="wc-sub">היעדרות</div></div>
-      <div class="wc-stat"><div class="wc-num">${w2notrep-w1notrep>0?'+':''}${fmt(w2notrep-w1notrep)}</div><div class="wc-sub">לא דווחו</div></div>
+      <div class="wc-stat">${notrepDiff}<div class="wc-sub">לא דווחו</div></div>
     </div>`;
 }
 
@@ -768,21 +950,21 @@ function renderRankLists() {
 // ── FILTERS ───────────────────────────────────────────────────
 function isFiltered() {
   return !!(
-    (document.getElementById('searchInput')?.value || '').trim() ||
+    document.getElementById('rashutFilter')?.value ||
     document.getElementById('sectorFilter')?.value ||
     document.getElementById('riskFilter')?.value ||
     document.getElementById('mefakechFilter')?.value
   );
 }
 function applyFilters() {
-  const q   = document.getElementById('searchInput').value.trim().toLowerCase();
+  const q   = document.getElementById('rashutFilter').value;
   const sc  = document.getElementById('sectorFilter').value;
   const rc  = document.getElementById('riskFilter').value;
   const srt = document.getElementById('sortSel').value;
   const mf  = document.getElementById('mefakechFilter').value;
   const rPct = r => activeWeek===1 ? r.w1Pct : activeWeek===2 ? r.w2Pct : Math.round((r.w1Pct+r.w2Pct)/2);
   filteredData = RESHUT_DATA.filter(r => {
-    if (q  && !r.name.includes(q)) return false;
+    if (q  && r.name !== q) return false;
     if (sc && r.sector !== sc) return false;
     if (mf && r.mefakech !== mf) return false;
     if (rc === 'crit' && rPct(r) >= 40) return false;
@@ -795,11 +977,11 @@ function applyFilters() {
   if (srt === 'w2Pct')    filteredData.sort((a,b) => b.w2Pct - a.w2Pct);
   if (srt === 'trend')    filteredData.sort((a,b) => b.trend - a.trend);
   if (srt === 'abs3dPct') filteredData.sort((a,b) => b.abs3dPct - a.abs3dPct);
-  updateKPIs(); renderShlavBody(); renderMivzarBody(); renderRankLists(); renderAuthTable();
+  updateKPIs(); renderWeekCompare(); renderDailyTable(); renderShlavBody(); renderMivzarBody(); renderRankLists(); renderAuthTable();
 }
 function setSortCol(col) { document.getElementById('sortSel').value = col; applyFilters(); }
 function clearFilters() {
-  document.getElementById('searchInput').value = '';
+  document.getElementById('rashutFilter').value = '';
   document.getElementById('sectorFilter').value = '';
   document.getElementById('riskFilter').value = '';
   document.getElementById('mefakechFilter').value = '';
