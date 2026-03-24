@@ -303,6 +303,74 @@ td.auth-name { font-weight:700; color:var(--blue); font-size:12.5px; white-space
 #sh_modal .m-run{padding:7px 20px;background:#3b82f6;color:white;border:none;border-radius:7px;cursor:pointer;font-size:13px;font-weight:600;}
 #sh_modal .m-run:hover{background:#2563eb;}
 
+/* ─── MOBILE (≤768px) ─── */
+@media (max-width: 768px) {
+  /* Topbar */
+  .topbar { padding:0 10px; gap:8px; height:50px; }
+  .topbar-logo { height:32px; }
+  .topbar-title { font-size:13px; }
+  .topbar-date, .topbar-sep, .badge-live { display:none; }
+
+  /* Hero */
+  .hero { padding:10px 12px 8px; }
+  .hero-inner { flex-direction:column; align-items:flex-start; gap:8px; }
+  .hero-title { font-size:18px; }
+  .week-tabs { width:100%; }
+  .week-tab { flex:1; text-align:center; padding:5px 8px; }
+
+  /* KPI strip (tab 1) */
+  .kpi-strip { padding:10px 12px; }
+  .kpi-inner { grid-template-columns:repeat(2,1fr); gap:7px; }
+  .kpi-val { font-size:20px; }
+
+  /* Filter bar */
+  .filter-bar { padding:7px 12px; top:50px; }
+  .filter-inner { gap:6px; }
+  .f-select { height:34px; font-size:12px; max-width:100%; }
+  .res-count { font-size:10px; }
+
+  /* Section */
+  .section-wrap { padding:10px 12px; }
+
+  /* Main grid → single column (sidebar drops below) */
+  .main-grid { grid-template-columns:1fr; padding:0 12px 12px; gap:10px; }
+
+  /* Breakdown panels → single column */
+  .panels-row { grid-template-columns:1fr; }
+
+  /* Week compare */
+  .wc-label { min-width:80px; font-size:10px; padding:6px 8px; }
+  .wc-stat .wc-num { font-size:14px; }
+
+  /* Page tabs */
+  .page-tabs { padding:0 8px; overflow-x:auto; flex-wrap:nowrap; }
+  .tab-btn { padding:10px 14px; font-size:13px; white-space:nowrap; }
+
+  /* Shelter hero */
+  #page-maklot .sh-hero { padding:12px; flex-direction:column; align-items:flex-start; gap:8px; }
+  #page-maklot .sh-hero h2 { font-size:17px; }
+
+  /* Shelter KPI strip */
+  #page-maklot .kpi-strip { padding:10px 12px; gap:7px; }
+  #page-maklot .kpi { min-width:110px; padding:9px 11px; }
+  #page-maklot .kpi-val { font-size:20px; }
+
+  /* Shelter filters grid → 2 columns */
+  #page-maklot .sh-filters { padding:10px 12px; }
+  #page-maklot .sh-filters-grid { grid-template-columns:1fr 1fr; gap:8px; }
+  #page-maklot .sh-search-row { padding:8px 12px; flex-wrap:wrap; }
+
+  /* Shelter charts → stack */
+  #page-maklot .sh-charts { padding:10px 12px; gap:10px; }
+  #page-maklot .sh-chart { min-width:100%; }
+
+  /* Shelter table → horizontal scroll */
+  #page-maklot .sh-table-wrap { padding:0 12px 12px; }
+  #page-maklot .sh-table-box { overflow-x:auto; }
+  #page-maklot tbody td { padding:7px 9px; font-size:12px; }
+  #page-maklot thead th { padding:8px 9px; font-size:11px; }
+}
+
 </style>
 </head>
 <body>
