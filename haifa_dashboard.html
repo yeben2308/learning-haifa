@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>דשבורד מחוז חיפה — חינוך בחירום</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:      #f0f4fa;
+  --surface: #ffffff;
+  --card:    #ffffff;
+  --border:  #dbe3f0;
+  --border2: #c5d3e8;
+  --blue:    #003F8A;
+  --blue2:   #1a5ea8;
+  --blue3:   #e8f0fc;
+  --gold:    #C8972A;
+  --gold2:   #f0c44a;
+  --green:   #1a8a4a;
+  --green2:  #e6f4ed;
+  --red:     #c0392b;
+  --red2:    #fdf0ef;
+  --orange:  #d97706;
+  --orange2: #fef3e2;
+  --purple:  #7c3aed;
+  --gray:    #6b7280;
+  --text:    #1f2937;
+  --text2:   #374151;
+  --text3:   #6b7280;
+}
+* { margin:0; padding:0; box-sizing:border-box }
+html { scroll-behavior:smooth }
+body { font-family:'Heebo',sans-serif; background:var(--bg); color:var(--text); font-size:13px; line-height:1.5; }
+
+/* ─── TOPBAR ─── */
+.topbar {
+  background:var(--blue); border-bottom:3px solid var(--gold);
+  padding:0 20px; display:flex; align-items:center; gap:14px;
+  height:56px; position:sticky; top:0; z-index:300;
+  box-shadow:0 2px 10px rgba(0,0,0,.2);
+}
+.topbar-logo { height:42px; filter:brightness(0) invert(1); }
+.topbar-sep  { width:1px; height:22px; background:rgba(255,255,255,.25); }
+.topbar-title { font-size:17px; font-weight:900; color:white; letter-spacing:-.3px; }
+.topbar-title span { color:var(--gold2); }
+.badge-live {
+  font-size:11px; font-weight:600; padding:3px 10px; border-radius:20px;
+  color:#4ade80; background:rgba(74,222,128,.15); border:1px solid rgba(74,222,128,.3);
+  display:flex; align-items:center; gap:5px;
+}
+.badge-live::before { content:''; width:6px; height:6px; background:#4ade80; border-radius:50%; animation:pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+.topbar-date { font-size:11px; color:rgba(255,255,255,.6); font-family:'DM Mono',monospace; margin-right:auto; }
+
+/* ─── HERO ─── */
+.hero {
+  background:linear-gradient(135deg, var(--blue) 0%, var(--blue2) 100%);
+  padding:18px 20px 14px; color:white;
+}
+.hero-inner { max-width:1440px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap; }
+.hero-title { font-size:24px; font-weight:900; letter-spacing:-.5px; }
+.hero-title .accent { color:var(--gold2); }
+.hero-sub { font-size:12px; color:rgba(255,255,255,.75); margin-top:4px; }
+.hero-sub strong { color:white; }
+.week-tabs { display:flex; gap:3px; background:rgba(0,0,0,.2); border:1px solid rgba(255,255,255,.15); border-radius:9px; padding:3px; }
+.week-tab { padding:5px 14px; border-radius:6px; font-size:11.5px; font-weight:700; cursor:pointer; color:rgba(255,255,255,.65); border:none; background:none; transition:all .2s; font-family:'Heebo',sans-serif; }
+.week-tab.active { background:white; color:var(--blue); }
+
+/* ─── KPI STRIP ─── */
+.kpi-strip { padding:12px 20px; background:var(--surface); border-bottom:1px solid var(--border); }
+.kpi-inner { max-width:1440px; margin:0 auto; display:grid; grid-template-columns:repeat(7,1fr); gap:10px; }
+.kpi-card {
+  background:var(--card); border:1px solid var(--border); border-radius:10px;
+  padding:11px 14px; position:relative; overflow:hidden; cursor:default; transition:box-shadow .2s;
+}
+.kpi-card:hover { box-shadow:0 3px 12px rgba(0,63,138,.12); }
+.kpi-card::before { content:''; position:absolute; top:0; right:0; width:48px; height:48px; border-radius:0 10px 0 100%; opacity:.07; }
+.kpi-card.blue::before  { background:var(--blue); }
+.kpi-card.green::before { background:var(--green); }
+.kpi-card.red::before   { background:var(--red); }
+.kpi-card.gold::before  { background:var(--gold); }
+.kpi-card.orange::before{ background:var(--orange); }
+.kpi-card.purple::before{ background:var(--purple); }
+.kpi-lbl { font-size:9.5px; color:var(--text3); font-weight:700; text-transform:uppercase; letter-spacing:.4px; margin-bottom:4px; }
+.kpi-val { font-size:24px; font-weight:900; letter-spacing:-1px; line-height:1; font-family:'DM Mono',monospace; }
+.kpi-card.blue .kpi-val   { color:var(--blue); }
+.kpi-card.green .kpi-val  { color:var(--green); }
+.kpi-card.red .kpi-val    { color:var(--red); }
+.kpi-card.gold .kpi-val   { color:var(--gold); }
+.kpi-card.orange .kpi-val { color:var(--orange); }
+.kpi-card.purple .kpi-val { color:var(--purple); }
+.kpi-sub { font-size:10px; color:var(--text3); margin-top:3px; }
+.kpi-trend { display:inline-flex; align-items:center; gap:2px; font-size:10.5px; font-weight:700; margin-top:3px; }
+.kpi-trend.up { color:var(--green); } .kpi-trend.dn { color:var(--red); } .kpi-trend.flat { color:var(--text3); }
+
+/* ─── SECTION WRAPPER ─── */
+.section-wrap { max-width:1440px; margin:0 auto; padding:14px 20px; }
+.section-card {
+  background:var(--surface); border:1px solid var(--border); border-radius:12px;
+  overflow:hidden; box-shadow:0 1px 6px rgba(0,63,138,.06);
+}
+.sec-head {
+  background:var(--blue); color:white; padding:8px 14px;
+  display:flex; align-items:center; gap:7px; font-size:12.5px; font-weight:800;
+}
+.sec-head.brown { background:#6b3a1a; }
+.sec-head.green2 { background:var(--green); }
+.sec-head.orange3 { background:#b45309; }
+
+/* ─── DAILY TABLE ─── */
+.daily-wrap { overflow-x:auto; }
+.daily-table { width:100%; border-collapse:collapse; font-size:12px; }
+.daily-table thead th {
+  background:var(--blue); color:white; padding:8px 12px; text-align:right;
+  font-weight:700; font-size:11px; white-space:nowrap;
+}
+.daily-table tbody tr { border-bottom:1px solid #eef2f9; transition:background .1s; }
+.daily-table tbody tr:hover { background:#f4f8ff; }
+.daily-table td { padding:7px 12px; text-align:right; vertical-align:middle; }
+.daily-table td.date-cell { font-weight:700; color:var(--blue); }
+.daily-table .week-sep td { background:var(--blue3); font-weight:700; color:var(--blue2); font-size:11px; text-align:center; padding:4px; }
+.daily-table .avg-row td { background:#f8f9ff; font-weight:700; font-size:11.5px; }
+.daily-table .total-row td { background:var(--blue); color:white; font-weight:800; }
+.num-mono { font-family:'DM Mono',monospace; }
+.pct-g { color:var(--green); font-weight:700; }
+.pct-o { color:var(--orange); font-weight:700; }
+.pct-r { color:var(--red); font-weight:700; }
+.bar-cell { min-width:80px; }
+.inline-bar { display:flex; align-items:center; gap:6px; }
+.ib-track { flex:1; height:6px; background:#eef2f9; border-radius:3px; overflow:hidden; }
+.ib-fill  { height:100%; border-radius:3px; }
+
+/* ─── BREAKDOWN PANELS ROW ─── */
+.panels-row { display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin-top:14px; }
+.panel-table { width:100%; border-collapse:collapse; font-size:11.5px; }
+.panel-table th { background:var(--blue3); color:var(--blue); padding:6px 10px; text-align:right; font-weight:700; font-size:10.5px; border-bottom:2px solid var(--border2); }
+.panel-table td { padding:6px 10px; border-bottom:1px solid #f0f4fa; text-align:right; }
+.panel-table tr:last-child td { border-bottom:none; }
+.panel-table .total-row td { background:var(--blue3); font-weight:700; color:var(--blue); }
+.pbar-wrap { display:flex; align-items:center; gap:6px; }
+.pbar-track { flex:1; height:7px; background:#eef2f9; border-radius:3px; overflow:hidden; }
+.pbar-fill  { height:100%; border-radius:3px; }
+.pbar-fill.green  { background:var(--green); }
+.pbar-fill.orange { background:var(--orange); }
+.pbar-fill.red    { background:var(--red); }
+.pbar-fill.blue   { background:var(--blue); }
+.pbar-fill.purple { background:var(--purple); }
+.pbar-fill.cyan   { background:#0ea5e9; }
+
+/* weekly comparison */
+.week-compare { display:flex; flex-direction:column; gap:8px; padding:10px; }
+.wc-row { display:flex; align-items:stretch; gap:0; border:1px solid var(--border); border-radius:8px; overflow:hidden; }
+.wc-label { background:var(--blue3); color:var(--blue); padding:8px 12px; font-weight:700; font-size:11.5px; min-width:120px; display:flex; align-items:center; }
+.wc-stat { flex:1; padding:8px 12px; text-align:center; border-right:1px solid var(--border); }
+.wc-stat:last-child { border-right:none; }
+.wc-stat .wc-num  { font-size:18px; font-weight:900; font-family:'DM Mono',monospace; line-height:1; }
+.wc-stat .wc-sub  { font-size:9.5px; color:var(--text3); margin-top:2px; }
+.wc-row.diff-row .wc-label { background:var(--blue); color:white; }
+.wc-row.diff-row .wc-num { font-size:14px; }
+
+/* ─── FILTER BAR ─── */
+.filter-bar {
+  padding:8px 20px; border-bottom:1px solid var(--border);
+  background:var(--surface); position:sticky; top:56px; z-index:100;
+}
+.filter-inner { max-width:1440px; margin:0 auto; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.search-wrap { position:relative; flex:1; min-width:160px; max-width:240px; }
+.s-icon { position:absolute; top:50%; transform:translateY(-50%); right:8px; color:var(--text3); font-size:12px; pointer-events:none; }
+.search-input {
+  width:100%; height:32px; background:var(--bg); border:1px solid var(--border);
+  border-radius:7px; padding:0 28px 0 10px; color:var(--text); font-size:12px;
+  font-family:'Heebo',sans-serif;
+}
+.search-input:focus { outline:none; border-color:var(--blue2); }
+.f-select {
+  height:32px; background:var(--bg); border:1px solid var(--border); border-radius:7px;
+  padding:0 9px; color:var(--text); font-size:12px; font-family:'Heebo',sans-serif; cursor:pointer;
+}
+.f-sep { width:1px; height:20px; background:var(--border); }
+.btn-clr {
+  height:32px; padding:0 12px; background:transparent; border:1px solid var(--border);
+  border-radius:7px; color:var(--text3); font-size:11.5px; font-family:'Heebo',sans-serif; cursor:pointer;
+}
+.btn-clr:hover { background:var(--bg); }
+.res-count { font-size:11px; color:var(--text3); font-weight:600; margin-right:auto; background:var(--blue3); border:1px solid var(--border); border-radius:20px; padding:2px 10px; }
+.res-count span { color:var(--blue); font-weight:800; }
+
+/* ─── AUTHORITY TABLE ─── */
+.main-grid { max-width:1440px; margin:0 auto; padding:0 20px 20px; display:grid; grid-template-columns:1fr 300px; gap:14px; align-items:start; }
+.tbl-wrap { background:var(--card); border:1px solid var(--border); border-radius:12px; overflow:hidden; }
+.tbl-scroll { overflow-x:auto; }
+table.auth-table { width:100%; border-collapse:collapse; font-size:12px; }
+.auth-table thead th { background:var(--blue); color:white; padding:8px 11px; text-align:right; font-weight:700; font-size:10.5px; white-space:nowrap; cursor:pointer; user-select:none; }
+.auth-table thead th:hover { background:var(--blue2); }
+.auth-table tbody tr { border-bottom:1px solid #f0f4fa; transition:background .1s; }
+.auth-table tbody tr:hover { background:#f5f8ff; }
+.auth-table td { padding:7px 11px; text-align:right; vertical-align:middle; }
+td.auth-name { font-weight:700; color:var(--blue); font-size:12.5px; white-space:nowrap; }
+.sec-pill { display:inline-block; padding:2px 7px; border-radius:9px; font-size:10px; font-weight:700; }
+.sp-יהודי { background:#e8f0fc; color:#003F8A; border:1px solid #c4d4ef; }
+.sp-ערבי  { background:#fef3e2; color:#92400e; border:1px solid #fcd34d; }
+.sp-דרוזי { background:#f3eafe; color:#6b21a8; border:1px solid #ddd6fe; }
+.sp-בדואי { background:#e0f9f5; color:#065f46; border:1px solid #6ee7b7; }
+.spark { display:inline-flex; align-items:flex-end; gap:2px; height:18px; }
+.sp-b { width:5px; border-radius:1px 1px 0 0; }
+.t-up   { color:var(--green); font-weight:700; }
+.t-dn   { color:var(--red);   font-weight:700; }
+.t-flat { color:var(--text3); }
+
+/* ─── SIDEBAR ─── */
+.sidebar { display:flex; flex-direction:column; gap:12px; }
+.side-card { background:var(--card); border:1px solid var(--border); border-radius:12px; overflow:hidden; }
+.side-head { background:var(--blue); color:white; padding:8px 14px; font-size:12px; font-weight:800; display:flex; align-items:center; gap:5px; }
+.side-body { padding:12px 14px; }
+.risk-item { display:flex; align-items:center; gap:8px; padding:5px 8px; border-radius:7px; margin-bottom:6px; }
+.risk-item:last-child { margin-bottom:0; }
+.risk-item.crit { background:#fff0ef; border:1px solid #fca5a5; }
+.risk-item.warn { background:#fffbeb; border:1px solid #fcd34d; }
+.risk-item.ok   { background:#f0fdf4; border:1px solid #86efac; }
+.risk-dot { width:7px; height:7px; border-radius:50%; }
+.crit .risk-dot { background:var(--red); }
+.warn .risk-dot { background:var(--orange); }
+.ok   .risk-dot { background:var(--green); }
+.risk-lbl { flex:1; font-size:10.5px; font-weight:600; }
+.risk-n { font-size:15px; font-weight:900; font-family:'DM Mono',monospace; }
+.crit .risk-n { color:var(--red); } .warn .risk-n { color:var(--orange); } .ok .risk-n { color:var(--green); }
+.rank-list { display:flex; flex-direction:column; gap:4px; }
+.rank-item { display:flex; align-items:center; gap:6px; padding:5px 7px; border-radius:6px; background:var(--bg); }
+.rank-badge { width:17px; height:17px; border-radius:50%; font-size:9px; font-weight:800; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.rank-name { flex:1; font-size:11px; font-weight:600; }
+.rank-pct  { font-size:11.5px; font-family:'DM Mono',monospace; font-weight:700; }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <img src="haifa.png" class="topbar-logo" alt="מחוז חיפה">
+  <div class="topbar-sep"></div>
+  <div class="topbar-title">מחוז <span>חיפה</span> | חינוך בחירום</div>
+  <div class="badge-live">נתונים עדכניים</div>
+  <div class="topbar-date">08/03 – 19/03/2026 | 30 רשויות</div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-title">נוכחות תלמידים — <span class="accent">מחוז חיפה</span></div>
+      <div class="hero-sub"><strong>30</strong> רשויות · <strong>184,829</strong> תלמידים · 450 מוסדות · נתונים: 08–19/03/2026</div>
+    </div>
+    <div class="week-tabs">
+      <button class="week-tab" onclick="setWeek(1)" id="tab1">שבוע א׳ 08–12/03</button>
+      <button class="week-tab active" onclick="setWeek(2)" id="tab2">שבוע ב׳ 15–19/03</button>
+      <button class="week-tab" onclick="setWeek(0)" id="tab0">ממוצע כללי</button>
+    </div>
+  </div>
+</div>
+
+<!-- KPI STRIP -->
+<div class="kpi-strip">
+  <div class="kpi-inner">
+    <div class="kpi-card blue">
+      <div class="kpi-lbl">מוסדות</div>
+      <div class="kpi-val">450</div>
+      <div class="kpi-sub">30 רשויות פעילות</div>
+    </div>
+    <div class="kpi-card blue">
+      <div class="kpi-lbl">תלמידים</div>
+      <div class="kpi-val">184,829</div>
+      <div class="kpi-sub">סה"כ במחוז</div>
+    </div>
+    <div class="kpi-card green">
+      <div class="kpi-lbl">נוכחות מלאה</div>
+      <div class="kpi-val" id="kpi-fa">56%</div>
+      <div class="kpi-sub" id="kpi-fa-sub">ממוצע שבוע ב׳</div>
+    </div>
+    <div class="kpi-card red">
+      <div class="kpi-lbl">היעדרות מלאה</div>
+      <div class="kpi-val" id="kpi-abs">24%</div>
+      <div class="kpi-sub" id="kpi-abs-sub">ממוצע שבוע ב׳</div>
+    </div>
+    <div class="kpi-card orange">
+      <div class="kpi-lbl">לא מדווחים</div>
+      <div class="kpi-val" id="kpi-notrep">6,489</div>
+      <div class="kpi-sub" id="kpi-notrep-sub">ממוצע יומי שב׳ ב׳</div>
+    </div>
+    <div class="kpi-card red">
+      <div class="kpi-lbl">נעדרים +3</div>
+      <div class="kpi-val" id="kpi-abs3">55,493</div>
+      <div class="kpi-sub" id="kpi-abs3-sub">ה׳ 19/03</div>
+    </div>
+    <div class="kpi-card gold">
+      <div class="kpi-lbl">שינוי שבועי</div>
+      <div class="kpi-val" id="kpi-diff">-1%</div>
+      <div class="kpi-sub" id="kpi-diff-sub">שב׳ ב׳ לעומת שב׳ א׳</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ FILTER BAR ═══ -->
+<div class="filter-bar">
+  <div class="filter-inner">
+    <div class="search-wrap">
+      <span class="s-icon">🔍</span>
+      <input class="search-input" type="text" placeholder="חיפוש רשות..." id="searchInput" oninput="applyFilters()">
+    </div>
+    <select class="f-select" id="mefakechFilter" onchange="applyFilters()">
+      <option value="">כל המפקחים</option>
+    </select>
+    <select class="f-select" id="sectorFilter" onchange="applyFilters()">
+      <option value="">כל המגזרים</option>
+      <option value="יהודי">יהודי</option>
+      <option value="ערבי">ערבי</option>
+      <option value="דרוזי">דרוזי</option>
+      <option value="בדואי">בדואי</option>
+    </select>
+    <select class="f-select" id="riskFilter" onchange="applyFilters()">
+      <option value="">כל הרשויות</option>
+      <option value="crit">סיכון — מתחת 40%</option>
+      <option value="warn">בינוני — 40%–60%</option>
+      <option value="ok">טוב — מעל 60%</option>
+    </select>
+    <select class="f-select" id="sortSel" onchange="applyFilters()">
+      <option value="name">מיון: שם</option>
+      <option value="students">מיון: תלמידים</option>
+      <option value="w2Pct">מיון: נוכחות שב׳ ב׳</option>
+      <option value="trend">מיון: שינוי</option>
+      <option value="abs3dPct">מיון: נעדרים 3י</option>
+    </select>
+    <div class="f-sep"></div>
+    <button class="btn-clr" onclick="clearFilters()">נקה</button>
+    <div class="res-count">מוצגות <span id="resCount">30</span> רשויות</div>
+  </div>
+</div>
+
+<!-- ═══ SECTION 1: DAILY TABLE ═══ -->
+<div class="section-wrap">
+  <div class="section-card">
+    <div class="sec-head">📅 נוכחות תלמידים — שבוע אחרון</div>
+    <div class="daily-wrap">
+      <table class="daily-table">
+        <thead>
+          <tr>
+            <th>תאריך</th>
+            <th>מוסדות</th>
+            <th>תלמידים</th>
+            <th>נוכחות מלאה</th>
+            <th>%</th>
+            <th>היעדרות מלאה</th>
+            <th>%</th>
+            <th>לא מדווחים</th>
+            <th>נעדרים +3</th>
+          </tr>
+        </thead>
+        <tbody id="dailyTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SECTION 2: BREAKDOWN PANELS ═══ -->
+<div class="section-wrap" style="padding-top:0;">
+  <div class="panels-row">
+
+    <!-- שלב -->
+    <div class="section-card">
+      <div class="sec-head">🎓 פירוט — שלב חינוך</div>
+      <table class="panel-table">
+        <thead><tr><th>שלב</th><th>תלמידים</th><th id="shlav-col-head">נוכחות שב׳ ב׳</th></tr></thead>
+        <tbody id="shlavBody"></tbody>
+      </table>
+    </div>
+
+    <!-- מגזר -->
+    <div class="section-card">
+      <div class="sec-head brown">🌐 פירוט — מגזר</div>
+      <table class="panel-table">
+        <thead><tr><th>מגזר</th><th>תלמידים</th><th id="mivzar-col-head">נוכחות שב׳ ב׳</th></tr></thead>
+        <tbody id="mivzarBody"></tbody>
+      </table>
+    </div>
+
+    <!-- השוואה שבועית -->
+    <div class="section-card">
+      <div class="sec-head green2">📊 השוואה שבועית</div>
+      <div class="week-compare" id="weekCompare"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══ SECTION 3: AUTHORITY TABLE + SIDEBAR ═══ -->
+<div class="main-grid">
+  <div class="tbl-wrap">
+    <div class="sec-head">🏫 נוכחות לפי רשות — שבועות 08–19/03</div>
+    <div class="tbl-scroll">
+      <table class="auth-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th onclick="setSortCol('name')">רשות</th>
+            <th>מגזר</th>
+            <th onclick="setSortCol('students')">תלמידים</th>
+            <th onclick="setSortCol('w1Pct')">שב׳ א׳</th>
+            <th onclick="setSortCol('w2Pct')">שב׳ ב׳</th>
+            <th onclick="setSortCol('trend')">שינוי</th>
+            <th onclick="setSortCol('abs3dPct')">נעדרים 3י</th>
+            <th>ימים</th>
+          </tr>
+        </thead>
+        <tbody id="authTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="sidebar">
+    <!-- Risk -->
+    <div class="side-card">
+      <div class="side-head" id="risk-status-head">⚠️ סטטוס נוכחות (שב׳ ב׳)</div>
+      <div class="side-body">
+        <div class="risk-item crit"><div class="risk-dot"></div><div class="risk-lbl">קריטי &lt;40%</div><div class="risk-n" id="rCrit">—</div></div>
+        <div class="risk-item warn"><div class="risk-dot"></div><div class="risk-lbl">בינוני 40–60%</div><div class="risk-n" id="rWarn">—</div></div>
+        <div class="risk-item ok"><div class="risk-dot"></div><div class="risk-lbl">טוב &gt;60%</div><div class="risk-n" id="rOk">—</div></div>
+      </div>
+    </div>
+    <!-- Top -->
+    <div class="side-card">
+      <div class="side-head">🏆 5 מובילות</div>
+      <div class="side-body"><div class="rank-list" id="topList"></div></div>
+    </div>
+    <!-- Bottom -->
+    <div class="side-card">
+      <div class="side-head">📉 5 מפגרות</div>
+      <div class="side-body"><div class="rank-list" id="botList"></div></div>
+    </div>
+  </div>
+</div>
+
+<footer style="text-align:center;padding:14px;font-size:11px;color:var(--text3);border-top:1px solid var(--border);background:var(--surface);">
+  מחוז חיפה — משרד החינוך | נתוני נוכחות חירום | שבועות 08–19/03/2026
+</footer>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────
+const RESHUT_DATA = [
+  {name:"אום אל-פחם",sector:"ערבי",mefakech:"ערבי א׳",students:13946,w1Pct:50,w2Pct:37,w1AbsPct:24,w2AbsPct:18,trend:-13,abs3d:12250,abs3dPct:87.8,days:[46,40,43,42,12]},
+  {name:"אור עקיבא",sector:"יהודי",mefakech:"צפון",students:4511,w1Pct:55,w2Pct:54,w1AbsPct:22,w2AbsPct:25,trend:-1,abs3d:591,abs3dPct:13.1,days:[56,53,59,51,50]},
+  {name:"אלונה",sector:"יהודי",mefakech:"צפון",students:295,w1Pct:58,w2Pct:68,w1AbsPct:0,w2AbsPct:1,trend:10,abs3d:53,abs3dPct:18,days:[81,65,53,73,65]},
+  {name:"באקה אל-גרביה",sector:"ערבי",mefakech:"ערבי א׳",students:6946,w1Pct:49,w2Pct:44,w1AbsPct:35,w2AbsPct:30,trend:-5,abs3d:4946,abs3dPct:71.2,days:[51,45,48,45,29]},
+  {name:"בנימינה גבעת עדה",sector:"יהודי",mefakech:"צפון",students:3373,w1Pct:57,w2Pct:60,w1AbsPct:14,w2AbsPct:17,trend:3,abs3d:487,abs3dPct:14.4,days:[63,61,58,62,55]},
+  {name:'בסמ"ה',sector:"ערבי",mefakech:"ערבי א׳",students:2746,w1Pct:42,w2Pct:39,w1AbsPct:41,w2AbsPct:29,trend:-3,abs3d:2243,abs3dPct:81.7,days:[46,41,42,47,18]},
+  {name:"ג'סר א-זרקא",sector:"ערבי",mefakech:"ערבי ב׳",students:3476,w1Pct:35,w2Pct:41,w1AbsPct:33,w2AbsPct:27,trend:6,abs3d:989,abs3dPct:28.5,days:[34,34,30,36,70]},
+  {name:"ג'ת",sector:"ערבי",mefakech:"ערבי א׳",students:2539,w1Pct:42,w2Pct:33,w1AbsPct:30,w2AbsPct:26,trend:-9,abs3d:2484,abs3dPct:97.8,days:[40,36,43,45,2]},
+  {name:"דאלית אל-כרמל",sector:"דרוזי",mefakech:"דרוזי",students:2571,w1Pct:72,w2Pct:57,w1AbsPct:17,w2AbsPct:28,trend:-15,abs3d:14,abs3dPct:0.5,days:[59,54,57,58,54]},
+  {name:"זבולון",sector:"בדואי",mefakech:"ערבי ב׳",students:2560,w1Pct:55,w2Pct:49,w1AbsPct:24,w2AbsPct:25,trend:-6,abs3d:832,abs3dPct:32.5,days:[52,51,50,52,38]},
+  {name:"זכרון יעקב",sector:"יהודי",mefakech:"צפון",students:4673,w1Pct:56,w2Pct:54,w1AbsPct:25,w2AbsPct:24,trend:-2,abs3d:558,abs3dPct:11.9,days:[60,57,59,46,48]},
+  {name:"חדרה",sector:"יהודי",mefakech:"צפון",students:17281,w1Pct:62,w2Pct:62,w1AbsPct:19,w2AbsPct:18,trend:0,abs3d:2340,abs3dPct:13.5,days:[67,62,64,60,59]},
+  {name:"חוף הכרמל",sector:"יהודי",mefakech:"כרמל ודרום",students:4112,w1Pct:54,w2Pct:52,w1AbsPct:23,w2AbsPct:24,trend:-2,abs3d:267,abs3dPct:6.5,days:[54,52,51,55,48]},
+  {name:"חיפה",sector:"יהודי",mefakech:"חיפה",students:39133,w1Pct:57,w2Pct:56,w1AbsPct:24,w2AbsPct:25,trend:-1,abs3d:4717,abs3dPct:12.1,days:[52,58,58,57,56]},
+  {name:"חריש",sector:"יהודי",mefakech:"צפון",students:7284,w1Pct:51,w2Pct:54,w1AbsPct:10,w2AbsPct:9,trend:3,abs3d:2516,abs3dPct:34.5,days:[56,58,56,55,46]},
+  {name:"טירת כרמל",sector:"יהודי",mefakech:"כרמל ודרום",students:4642,w1Pct:59,w2Pct:56,w1AbsPct:20,w2AbsPct:21,trend:-3,abs3d:471,abs3dPct:10.1,days:[57,56,57,56,52]},
+  {name:"כפר קרע",sector:"ערבי",mefakech:"ערבי א׳",students:5075,w1Pct:62,w2Pct:52,w1AbsPct:22,w2AbsPct:17,trend:-10,abs3d:4351,abs3dPct:85.7,days:[66,57,62,62,13]},
+  {name:"מנשה",sector:"יהודי",mefakech:"צפון",students:3103,w1Pct:74,w2Pct:70,w1AbsPct:9,w2AbsPct:5,trend:-4,abs3d:1048,abs3dPct:33.8,days:[76,70,71,76,57]},
+  {name:"מעלה עירון",sector:"ערבי",mefakech:"ערבי א׳",students:3187,w1Pct:38,w2Pct:35,w1AbsPct:47,w2AbsPct:33,trend:-3,abs3d:2822,abs3dPct:88.5,days:[41,41,37,42,11]},
+  {name:"נשר",sector:"יהודי",mefakech:"חיפה",students:2520,w1Pct:58,w2Pct:47,w1AbsPct:22,w2AbsPct:26,trend:-11,abs3d:247,abs3dPct:9.8,days:[51,45,47,48,45]},
+  {name:"עספיא",sector:"דרוזי",mefakech:"דרוזי",students:2440,w1Pct:53,w2Pct:51,w1AbsPct:27,w2AbsPct:30,trend:-2,abs3d:129,abs3dPct:5.3,days:[52,54,52,54,45]},
+  {name:"ערערה",sector:"ערבי",mefakech:"ערבי א׳",students:3971,w1Pct:57,w2Pct:44,w1AbsPct:20,w2AbsPct:13,trend:-13,abs3d:3905,abs3dPct:98.3,days:[60,50,55,55,0]},
+  {name:"פוריידיס",sector:"ערבי",mefakech:"ערבי ב׳",students:3276,w1Pct:47,w2Pct:43,w1AbsPct:35,w2AbsPct:26,trend:-4,abs3d:2773,abs3dPct:84.6,days:[50,51,48,53,15]},
+  {name:"פרדס חנה-כרכור",sector:"יהודי",mefakech:"צפון",students:9141,w1Pct:60,w2Pct:60,w1AbsPct:14,w2AbsPct:13,trend:0,abs3d:1220,abs3dPct:13.3,days:[63,60,61,59,56]},
+  {name:"קרית אתא",sector:"יהודי",mefakech:"קריות",students:8363,w1Pct:60,w2Pct:57,w1AbsPct:25,w2AbsPct:24,trend:-3,abs3d:925,abs3dPct:11.1,days:[61,57,58,56,52]},
+  {name:"קרית ביאליק",sector:"יהודי",mefakech:"קריות",students:7241,w1Pct:65,w2Pct:60,w1AbsPct:21,w2AbsPct:24,trend:-5,abs3d:581,abs3dPct:8,days:[66,61,62,59,54]},
+  {name:"קרית טבעון",sector:"יהודי",mefakech:"קריות",students:2981,w1Pct:67,w2Pct:65,w1AbsPct:17,w2AbsPct:16,trend:-2,abs3d:774,abs3dPct:26,days:[73,69,68,66,49]},
+  {name:"קרית ים",sector:"יהודי",mefakech:"קריות",students:4981,w1Pct:63,w2Pct:59,w1AbsPct:20,w2AbsPct:27,trend:-4,abs3d:440,abs3dPct:8.8,days:[61,60,59,57,58]},
+  {name:"קרית מוצקין",sector:"יהודי",mefakech:"קריות",students:8381,w1Pct:65,w2Pct:65,w1AbsPct:20,w2AbsPct:24,trend:0,abs3d:512,abs3dPct:6.1,days:[70,63,66,62,63]},
+  {name:"רכסים",sector:"יהודי",mefakech:"קריות",students:90,w1Pct:82,w2Pct:84,w1AbsPct:12,w2AbsPct:9,trend:2,abs3d:8,abs3dPct:8.9,days:[74,87,90,86,84]},
+];
+
+const DAILY_DATA = [
+  {date:"א׳ 08/03",week:1,stu:184829,fa:103309,faPct:56,fabs:42795,fabsPct:23,notrep:16295,abs3:2597,mosadot:450},
+  {date:"ב׳ 09/03",week:1,stu:184829,fa:106437,faPct:58,fabs:41590,fabsPct:23,notrep:12840,abs3:5727,mosadot:450},
+  {date:"ג׳ 10/03",week:1,stu:184829,fa:106130,faPct:57,fabs:44215,fabsPct:24,notrep:9687,abs3:6385,mosadot:450},
+  {date:"ד׳ 11/03",week:1,stu:184829,fa:106034,faPct:57,fabs:42782,fabsPct:23,notrep:11335,abs3:6798,mosadot:450},
+  {date:"ה׳ 12/03",week:1,stu:184829,fa:102145,faPct:55,fabs:38459,fabsPct:21,notrep:16754,abs3:7206,mosadot:450},
+  {date:"א׳ 15/03",week:2,stu:184827,fa:105172,faPct:57,fabs:43562,fabsPct:24,notrep:6591,abs3:13555,mosadot:450},
+  {date:"ב׳ 16/03",week:2,stu:184827,fa:102004,faPct:55,fabs:46597,fabsPct:25,notrep:6234,abs3:11143,mosadot:450},
+  {date:"ג׳ 17/03",week:2,stu:184827,fa:104073,faPct:56,fabs:45217,fabsPct:24,notrep:6583,abs3:10175,mosadot:450},
+  {date:"ד׳ 18/03",week:2,stu:184827,fa:101416,faPct:55,fabs:40573,fabsPct:22,notrep:7076,abs3:14475,mosadot:450},
+  {date:"ה׳ 19/03",week:2,stu:184827,fa:84176,faPct:46,fabs:24657,fabsPct:13,notrep:4459,abs3:55493,mosadot:450},
+];
+
+const SHLAV_DATA = [
+  {name:"יסודי", stu:101728, w1Pct:60, w2Pct:58, lastPct:51},
+  {name:'חט"ב',  stu:58272,  w1Pct:51, w2Pct:47, lastPct:37},
+  {name:"תיכון", stu:19946,  w1Pct:55, w2Pct:48, lastPct:41},
+  {name:'ח"מ',   stu:4881,   w1Pct:69, w2Pct:68, lastPct:60},
+];
+
+const MIVZAR_DATA = [
+  {name:'יהודי', stu:127181, w2Pct:59, lastPct:54},
+  {name:'ערבי',  stu:52143,  w2Pct:42, lastPct:24},
+  {name:'דרוזי', stu:5011,   w2Pct:54, lastPct:50},
+  {name:'בדואי', stu:492,    w2Pct:31, lastPct:46},
+];
+
+// ── HELPERS ───────────────────────────────────────────────────
+let activeWeek = 2;
+let filteredData = [...RESHUT_DATA].sort((a,b) => a.name.localeCompare(b.name,'he'));
+
+function pct(v)  { return v >= 60 ? 'pct-g' : v >= 40 ? 'pct-o' : 'pct-r'; }
+function fmt(n)  { return n.toLocaleString('he-IL'); }
+function avg(arr,fn) { return Math.round(arr.reduce((s,x)=>s+(fn?fn(x):x),0)/arr.length); }
+
+function barHtml(pctVal, colorClass) {
+  return `<div class="pbar-wrap">
+    <div class="pbar-track"><div class="pbar-fill ${colorClass}" style="width:${Math.min(pctVal,100)}%"></div></div>
+    <span class="${pct(pctVal)}" style="font-size:11px;font-weight:700;min-width:28px;">${pctVal}%</span>
+  </div>`;
+}
+
+function mivzarColor(name) {
+  const map = {יהודי:'blue', ערבי:'orange', דרוזי:'purple', בדואי:'cyan'};
+  return map[name] || 'blue';
+}
+
+// ── WEEK SWITCH ───────────────────────────────────────────────
+function setWeek(w) {
+  activeWeek = w;
+  ['tab0','tab1','tab2'].forEach(id => document.getElementById(id).classList.remove('active'));
+  document.getElementById('tab'+w).classList.add('active');
+  updateKPIs(); renderShlavBody(); renderMivzarBody(); renderAuthTable(); renderRankLists();
+}
+
+// ── KPIs ──────────────────────────────────────────────────────
+function updateKPIs() {
+  const w1d = DAILY_DATA.filter(d=>d.week===1), w2d = DAILY_DATA.filter(d=>d.week===2);
+  const activeD = activeWeek===1 ? w1d : activeWeek===2 ? w2d : DAILY_DATA;
+  const lbl      = activeWeek===1 ? 'ממוצע שבוע א׳' : activeWeek===2 ? 'ממוצע שבוע ב׳' : 'ממוצע כללי';
+  const lblDaily = activeWeek===1 ? "ממוצע יומי שב׳ א׳" : activeWeek===2 ? "ממוצע יומי שב׳ ב׳" : 'ממוצע יומי כללי';
+  const colHead  = activeWeek===1 ? "נוכחות שב׳ א׳" : activeWeek===2 ? "נוכחות שב׳ ב׳" : 'ממוצע כללי';
+  const riskLbl  = activeWeek===1 ? "⚠️ סטטוס נוכחות (שב׳ א׳)" : activeWeek===2 ? "⚠️ סטטוס נוכחות (שב׳ ב׳)" : "⚠️ סטטוס נוכחות (ממוצע)";
+  const w1Avg = Math.round(w1d.reduce((s,d)=>s+d.faPct,0)/w1d.length);
+  const w2Avg = Math.round(w2d.reduce((s,d)=>s+d.faPct,0)/w2d.length);
+  const diff  = w2Avg - w1Avg;
+
+  let faAvg, absAvg, notrepText, abs3Text, abs3Sub;
+  if (isFiltered() && filteredData.length > 0) {
+    const src = filteredData;
+    const totalStu = src.reduce((s,r)=>s+r.students,0);
+    const getFa  = r => activeWeek===1 ? r.w1Pct  : activeWeek===2 ? r.w2Pct  : Math.round((r.w1Pct +r.w2Pct )/2);
+    const getAbs = r => activeWeek===1 ? r.w1AbsPct: activeWeek===2 ? r.w2AbsPct: Math.round((r.w1AbsPct+r.w2AbsPct)/2);
+    faAvg    = totalStu>0 ? Math.round(src.reduce((s,r)=>s+r.students*getFa(r), 0)/totalStu) : 0;
+    absAvg   = totalStu>0 ? Math.round(src.reduce((s,r)=>s+r.students*getAbs(r),0)/totalStu) : 0;
+    abs3Text = fmt(src.reduce((s,r)=>s+r.abs3d,0));
+    abs3Sub  = "ה׳ 19/03";
+    notrepText = '—';
+  } else {
+    faAvg    = Math.round(activeD.reduce((s,d)=>s+d.faPct, 0)/activeD.length);
+    absAvg   = Math.round(activeD.reduce((s,d)=>s+d.fabsPct,0)/activeD.length);
+    abs3Text = fmt(Math.round(activeD.reduce((s,d)=>s+d.abs3,  0)/activeD.length));
+    abs3Sub  = lblDaily;
+    notrepText = fmt(Math.round(activeD.reduce((s,d)=>s+d.notrep,0)/activeD.length));
+  }
+
+  document.getElementById('kpi-fa').textContent = faAvg + '%';
+  document.getElementById('kpi-fa-sub').textContent = lbl;
+  document.getElementById('kpi-abs').textContent = absAvg + '%';
+  document.getElementById('kpi-abs-sub').textContent = lbl;
+  document.getElementById('kpi-notrep').textContent = notrepText;
+  document.getElementById('kpi-notrep-sub').textContent = lblDaily;
+  document.getElementById('kpi-abs3').textContent = abs3Text;
+  document.getElementById('kpi-abs3-sub').textContent = abs3Sub;
+  document.getElementById('kpi-diff').textContent = (diff >= 0 ? '+' : '') + diff + '%';
+  document.getElementById('kpi-diff').style.color = diff >= 0 ? 'var(--green)' : 'var(--red)';
+  document.getElementById('kpi-diff-sub').textContent = 'שב׳ ב׳ לעומת שב׳ א׳';
+  document.getElementById('shlav-col-head').textContent = colHead;
+  document.getElementById('mivzar-col-head').textContent = colHead;
+  document.getElementById('risk-status-head').textContent = riskLbl;
+
+  const riskPct = r => activeWeek===1 ? r.w1Pct : activeWeek===2 ? r.w2Pct : Math.round((r.w1Pct+r.w2Pct)/2);
+  const src = filteredData;
+  document.getElementById('rCrit').textContent = src.filter(r=>riskPct(r)<40).length;
+  document.getElementById('rWarn').textContent = src.filter(r=>riskPct(r)>=40&&riskPct(r)<60).length;
+  document.getElementById('rOk').textContent   = src.filter(r=>riskPct(r)>=60).length;
+}
+
+// ── DAILY TABLE ───────────────────────────────────────────────
+function renderDailyTable() {
+  let html = '';
+  let w1fa=0,w1stu=0,w1abs=0,w2fa=0,w2stu=0,w2abs=0;
+  DAILY_DATA.forEach((d,i) => {
+    if (i === 5) {
+      // Week avg row
+      const a1fP = Math.round(w1fa*100/w1stu), a1aP = Math.round(w1abs*100/w1stu);
+      html += `<tr class="avg-row"><td colspan="9" style="text-align:center;font-size:11px;color:var(--blue);padding:3px;">
+        ─── שבוע א׳ ממוצע: נוכחות <span class="${pct(a1fP)}">${a1fP}%</span> · היעדרות ${a1aP}% ───
+      </td></tr>`;
+      html += `<tr class="week-sep"><td colspan="9">── שבוע ב׳: 15–19/03 ──</td></tr>`;
+    }
+    const fBar  = `<div class="inline-bar"><div class="ib-track"><div class="ib-fill" style="width:${d.faPct}%;background:${d.faPct>=60?'var(--green)':d.faPct>=40?'var(--orange)':'var(--red)'}"></div></div></div>`;
+    const aBar  = `<div class="inline-bar"><div class="ib-track"><div class="ib-fill" style="width:${d.fabsPct}%;background:var(--red)"></div></div></div>`;
+    html += `<tr>
+      <td class="date-cell num-mono">${d.date}</td>
+      <td class="num-mono">${d.mosadot}</td>
+      <td class="num-mono">${fmt(d.stu)}</td>
+      <td class="num-mono">${fmt(d.fa)}</td>
+      <td>${fBar}<span class="${pct(d.faPct)}" style="font-size:11px;font-weight:700;">${d.faPct}%</span></td>
+      <td class="num-mono">${fmt(d.fabs)}</td>
+      <td><span class="pct-r" style="font-size:11px;font-weight:700;">${d.fabsPct}%</span></td>
+      <td class="num-mono" style="color:var(--orange);">${fmt(d.notrep)}</td>
+      <td class="num-mono" style="color:var(--red);font-weight:700;">${fmt(d.abs3)}</td>
+    </tr>`;
+    if (d.week===1) { w1fa+=d.fa; w1stu+=d.stu; w1abs+=d.fabs; }
+    else            { w2fa+=d.fa; w2stu+=d.stu; w2abs+=d.fabs; }
+  });
+  // Week 2 avg + Total
+  const a2fP = Math.round(w2fa*100/w2stu), a2aP = Math.round(w2abs*100/w2stu);
+  html += `<tr class="avg-row"><td colspan="9" style="text-align:center;font-size:11px;color:var(--blue);padding:3px;">
+    ─── שבוע ב׳ ממוצע: נוכחות <span class="${pct(a2fP)}">${a2fP}%</span> · היעדרות ${a2aP}% ───
+  </td></tr>`;
+  document.getElementById('dailyTableBody').innerHTML = html;
+}
+
+// ── SHLAV BREAKDOWN ───────────────────────────────────────────
+function renderShlavBody() {
+  let html = '';
+  let totStu=0, totFa=0;
+  SHLAV_DATA.forEach(s => {
+    const v = activeWeek === 0 ? Math.round((s.w1Pct + s.w2Pct) / 2) : s[activeWeek === 1 ? 'w1Pct' : 'w2Pct'];
+    totStu += s.stu;
+    totFa  += Math.round(s.stu * v / 100);
+    html += `<tr>
+      <td style="font-weight:600;">${s.name}</td>
+      <td class="num-mono">${fmt(s.stu)}</td>
+      <td>${barHtml(v, v>=60?'green':v>=40?'orange':'red')}</td>
+    </tr>`;
+  });
+  const totPct = Math.round(totFa*100/totStu);
+  html += `<tr class="total-row"><td>ממוצע כללי</td><td class="num-mono">${fmt(totStu)}</td><td>${barHtml(totPct,'blue')}</td></tr>`;
+  document.getElementById('shlavBody').innerHTML = html;
+}
+
+// ── MIVZAR BREAKDOWN ─────────────────────────────────────────
+function getSectorPct(sectorName, week) {
+  const rows = RESHUT_DATA.filter(r => r.sector === sectorName);
+  const stu = rows.reduce((s,r) => s+r.students, 0);
+  if (!stu) return 0;
+  if (week === 1) return Math.round(rows.reduce((s,r) => s + r.students*r.w1Pct, 0) / stu);
+  if (week === 2) return Math.round(rows.reduce((s,r) => s + r.students*r.w2Pct, 0) / stu);
+  return Math.round(rows.reduce((s,r) => s + r.students*(r.w1Pct+r.w2Pct)/2, 0) / stu);
+}
+function renderMivzarBody() {
+  let html = '';
+  let totStu=0, totFa=0;
+  if (isFiltered() && filteredData.length > 0) {
+    const sectorMap = {};
+    filteredData.forEach(r => {
+      if (!sectorMap[r.sector]) sectorMap[r.sector] = {stu:0,fa1:0,fa2:0};
+      sectorMap[r.sector].stu  += r.students;
+      sectorMap[r.sector].fa1  += r.students * r.w1Pct / 100;
+      sectorMap[r.sector].fa2  += r.students * r.w2Pct / 100;
+    });
+    Object.keys(sectorMap).sort((a,b)=>a.localeCompare(b,'he')).forEach(sector => {
+      const d = sectorMap[sector];
+      const v = activeWeek===1 ? Math.round(d.fa1*100/d.stu) :
+                activeWeek===2 ? Math.round(d.fa2*100/d.stu) :
+                                 Math.round((d.fa1+d.fa2)*100/(d.stu*2));
+      totStu += d.stu; totFa += Math.round(d.stu*v/100);
+      html += `<tr><td style="font-weight:600;">${sector}</td><td class="num-mono">${fmt(d.stu)}</td><td>${barHtml(v, mivzarColor(sector))}</td></tr>`;
+    });
+  } else {
+    MIVZAR_DATA.forEach(m => {
+      const v = activeWeek === 2 ? m.w2Pct : getSectorPct(m.name, activeWeek);
+      totStu += m.stu;
+      totFa  += Math.round(m.stu * v / 100);
+      const col = mivzarColor(m.name);
+      html += `<tr>
+        <td style="font-weight:600;">${m.name}</td>
+        <td class="num-mono">${fmt(m.stu)}</td>
+        <td>${barHtml(v, col)}</td>
+      </tr>`;
+    });
+  }
+  const totPct = Math.round(totFa*100/totStu);
+  html += `<tr class="total-row"><td>ממוצע כללי</td><td class="num-mono">${fmt(totStu)}</td><td>${barHtml(totPct,'blue')}</td></tr>`;
+  document.getElementById('mivzarBody').innerHTML = html;
+}
+
+// ── WEEKLY COMPARE ────────────────────────────────────────────
+function renderWeekCompare() {
+  const w1 = DAILY_DATA.filter(d=>d.week===1), w2 = DAILY_DATA.filter(d=>d.week===2);
+  const w1fa  = Math.round(w1.reduce((s,d)=>s+d.faPct,0)/w1.length);
+  const w2fa  = Math.round(w2.reduce((s,d)=>s+d.faPct,0)/w2.length);
+  const w1abs = Math.round(w1.reduce((s,d)=>s+d.fabsPct,0)/w1.length);
+  const w2abs = Math.round(w2.reduce((s,d)=>s+d.fabsPct,0)/w2.length);
+  const w1notrep = Math.round(w1.reduce((s,d)=>s+d.notrep,0)/w1.length);
+  const w2notrep = Math.round(w2.reduce((s,d)=>s+d.notrep,0)/w2.length);
+  const diffFa  = w2fa  - w1fa,  diffAbs = w2abs - w1abs;
+  const trend = v => v > 0 ? `<span style="color:var(--green)">▲ +${v}</span>` : v < 0 ? `<span style="color:var(--red)">▼ ${v}</span>` : '—';
+  const diffFaColor  = diffFa  >= 0 ? 'var(--green)' : 'var(--red)';
+  const diffAbsColor = diffAbs <= 0 ? 'var(--green)' : 'var(--red)';
+
+  document.getElementById('weekCompare').innerHTML = `
+    <div class="wc-row">
+      <div class="wc-label">שבוע ב׳<br><span style="font-size:9.5px;opacity:.7">15–19/03 · ${w2.length} ימים</span></div>
+      <div class="wc-stat"><div class="wc-num" style="color:var(--green)">${w2fa}%</div><div class="wc-sub">נוכחות</div></div>
+      <div class="wc-stat"><div class="wc-num" style="color:var(--red)">${w2abs}%</div><div class="wc-sub">היעדרות</div></div>
+      <div class="wc-stat"><div class="wc-num" style="color:var(--orange)">${fmt(w2notrep)}</div><div class="wc-sub">לא דווחו</div></div>
+    </div>
+    <div class="wc-row">
+      <div class="wc-label">שבוע א׳<br><span style="font-size:9.5px;opacity:.7">08–12/03 · ${w1.length} ימים</span></div>
+      <div class="wc-stat"><div class="wc-num" style="color:var(--green)">${w1fa}%</div><div class="wc-sub">נוכחות</div></div>
+      <div class="wc-stat"><div class="wc-num" style="color:var(--red)">${w1abs}%</div><div class="wc-sub">היעדרות</div></div>
+      <div class="wc-stat"><div class="wc-num" style="color:var(--orange)">${fmt(w1notrep)}</div><div class="wc-sub">לא דווחו</div></div>
+    </div>
+    <div class="wc-row diff-row">
+      <div class="wc-label">שינוי<br><span style="font-size:9.5px;opacity:.8">ב׳ לעומת א׳</span></div>
+      <div class="wc-stat"><div class="wc-num" style="color:${diffFaColor}">${diffFa>0?'+':''}${diffFa}%</div><div class="wc-sub">נוכחות</div></div>
+      <div class="wc-stat"><div class="wc-num" style="color:${diffAbsColor}">${diffAbs>0?'+':''}${diffAbs}%</div><div class="wc-sub">היעדרות</div></div>
+      <div class="wc-stat"><div class="wc-num">${w2notrep-w1notrep>0?'+':''}${fmt(w2notrep-w1notrep)}</div><div class="wc-sub">לא דווחו</div></div>
+    </div>`;
+}
+
+// ── AUTH TABLE ────────────────────────────────────────────────
+function renderAuthTable() {
+  const faKey = activeWeek === 1 ? 'w1Pct' : 'w2Pct';
+  const html = filteredData.map((r,i) => {
+    const fa1 = r.w1Pct, fa2 = r.w2Pct;
+    const spark = r.days.map(v => {
+      const h = Math.max(2, Math.round(v*18/100));
+      const c = v>=60?'#1a8a4a':v>=40?'#d97706':'#c0392b';
+      return `<div class="sp-b" style="height:${h}px;background:${c}"></div>`;
+    }).join('');
+    const tStr = r.trend > 0 ? `<span class="t-up">▲ +${r.trend}%</span>` : r.trend < 0 ? `<span class="t-dn">▼ ${r.trend}%</span>` : `<span class="t-flat">—</span>`;
+    const a3c = r.abs3dPct > 50 ? 'pct-r' : r.abs3dPct > 20 ? 'pct-o' : 'pct-g';
+    return `<tr>
+      <td style="color:var(--text3);font-size:10.5px;">${i+1}</td>
+      <td class="auth-name">${r.name}</td>
+      <td><span class="sec-pill sp-${r.sector}">${r.sector}</span></td>
+      <td class="num-mono">${fmt(r.students)}</td>
+      <td class="num-mono"><span class="${pct(fa1)}">${fa1}%</span></td>
+      <td class="num-mono"><span class="${pct(fa2)}">${fa2}%</span></td>
+      <td class="num-mono">${tStr}</td>
+      <td class="num-mono"><span class="${a3c}">${r.abs3dPct}%</span></td>
+      <td><div class="spark">${spark}</div></td>
+    </tr>`;
+  }).join('');
+  document.getElementById('authTableBody').innerHTML = html || '<tr><td colspan="9" style="text-align:center;padding:16px;color:var(--text3);">אין תוצאות</td></tr>';
+  document.getElementById('resCount').textContent = filteredData.length;
+}
+
+// ── RANK LISTS ────────────────────────────────────────────────
+function renderRankLists() {
+  const getFa = r => activeWeek===1 ? r.w1Pct : activeWeek===2 ? r.w2Pct : Math.round((r.w1Pct+r.w2Pct)/2);
+  const sorted = [...filteredData].sort((a,b) => getFa(b) - getFa(a));
+  const topColors = ['#c8972a','#6b7280','#92400e'];
+  document.getElementById('topList').innerHTML = sorted.slice(0,5).map((r,i) => {
+    const c = i < 3 ? topColors[i] : '#6b7280';
+    return `<div class="rank-item"><div class="rank-badge" style="background:${c}22;color:${c}">${i+1}</div><div class="rank-name">${r.name}</div><div class="rank-pct pct-g">${getFa(r)}%</div></div>`;
+  }).join('');
+  document.getElementById('botList').innerHTML = sorted.slice(-5).reverse().map((r,i) => {
+    return `<div class="rank-item"><div class="rank-badge" style="background:#fdf0ef;color:#c0392b">${sorted.length-i}</div><div class="rank-name">${r.name}</div><div class="rank-pct pct-r">${getFa(r)}%</div></div>`;
+  }).join('');
+}
+
+// ── FILTERS ───────────────────────────────────────────────────
+function isFiltered() {
+  return !!(
+    (document.getElementById('searchInput')?.value || '').trim() ||
+    document.getElementById('sectorFilter')?.value ||
+    document.getElementById('riskFilter')?.value ||
+    document.getElementById('mefakechFilter')?.value
+  );
+}
+function applyFilters() {
+  const q   = document.getElementById('searchInput').value.trim().toLowerCase();
+  const sc  = document.getElementById('sectorFilter').value;
+  const rc  = document.getElementById('riskFilter').value;
+  const srt = document.getElementById('sortSel').value;
+  const mf  = document.getElementById('mefakechFilter').value;
+  const rPct = r => activeWeek===1 ? r.w1Pct : activeWeek===2 ? r.w2Pct : Math.round((r.w1Pct+r.w2Pct)/2);
+  filteredData = RESHUT_DATA.filter(r => {
+    if (q  && !r.name.includes(q)) return false;
+    if (sc && r.sector !== sc) return false;
+    if (mf && r.mefakech !== mf) return false;
+    if (rc === 'crit' && rPct(r) >= 40) return false;
+    if (rc === 'warn' && (rPct(r) < 40 || rPct(r) >= 60)) return false;
+    if (rc === 'ok'   && rPct(r) < 60) return false;
+    return true;
+  });
+  if (srt === 'name')     filteredData.sort((a,b) => a.name.localeCompare(b.name,'he'));
+  if (srt === 'students') filteredData.sort((a,b) => b.students - a.students);
+  if (srt === 'w2Pct')    filteredData.sort((a,b) => b.w2Pct - a.w2Pct);
+  if (srt === 'trend')    filteredData.sort((a,b) => b.trend - a.trend);
+  if (srt === 'abs3dPct') filteredData.sort((a,b) => b.abs3dPct - a.abs3dPct);
+  updateKPIs(); renderShlavBody(); renderMivzarBody(); renderRankLists(); renderAuthTable();
+}
+function setSortCol(col) { document.getElementById('sortSel').value = col; applyFilters(); }
+function clearFilters() {
+  document.getElementById('searchInput').value = '';
+  document.getElementById('sectorFilter').value = '';
+  document.getElementById('riskFilter').value = '';
+  document.getElementById('mefakechFilter').value = '';
+  document.getElementById('sortSel').value = 'name';
+  applyFilters();
+}
+
+// ── INIT ──────────────────────────────────────────────────────
+// Populate מפקח dropdown
+(function() {
+  const opts = [...new Set(RESHUT_DATA.map(r=>r.mefakech))].filter(Boolean).sort((a,b)=>a.localeCompare(b,'he'));
+  const sel = document.getElementById('mefakechFilter');
+  opts.forEach(v => { const o = document.createElement('option'); o.value=v; o.textContent=v; sel.appendChild(o); });
+})();
+updateKPIs();
+renderDailyTable();
+renderShlavBody();
+renderMivzarBody();
+renderWeekCompare();
+renderRankLists();
+renderAuthTable();
+</script>
+</body>
+</html>
